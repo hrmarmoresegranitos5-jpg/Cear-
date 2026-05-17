@@ -1,51 +1,74 @@
-# Ceará Planejados — Estrutura do Projeto
+# Ceará Planejados — PWA
 
-Sistema de orçamento e gestão para vidraçaria/marcenaria.
+Sistema de orçamento para Vidraçaria · Marcenaria · Serralheria.
 
-## Estrutura — ETAPA 1 (separação de páginas)
+## Etapas concluídas
 
-```
-src/
-├── App.jsx                    ← Orquestrador: shell, nav, roteamento
-│
-├── pages/
-│   ├── dashboard.jsx          ← Página Inicial (atalhos de orçamento + infos)
-│   ├── orcamentos.jsx         ← Calculadora de Orçamento + CAD Preview
-│   ├── financeiro.jsx         ← Tabela de Preços (ex-"Preços")
-│   ├── agenda.jsx             ← Agenda de visitas/instalações (stub)
-│   ├── clientes.jsx           ← Cadastro de clientes (stub)
-│   └── configuracoes.jsx      ← Sobre a empresa + futuras configs (ex-"Sobre")
-│
-├── data/
-│   └── precos.js              ← VIDROS, ACESSORIOS_CONFIG, constantes de frete
-│
-└── utils/
-    ├── calcOrc.js             ← calcularOrcamento(), formatBRL(), gerarTextoWpp()
-    └── cad.js                 ← renderCAD() — desenho técnico SVG
-```
+| Etapa | Foco                   | Status |
+|-------|------------------------|--------|
+| 1–5   | Funcionalidades core   | ✅     |
+| 6     | PWA (installable)      | ✅     |
+| 7     | Performance            | ✅     |
+| 8     | Visual Premium (nativo)| ✅     |
 
-## O que foi feito na ETAPA 1
+## Etapa 8 — Visual Premium
 
-- **Separação de páginas**: cada tela tem seu próprio arquivo `.jsx`
-- **App.jsx limpo**: só gerencia estado de navegação e renderiza a página ativa
-- **Dados centralizados**: `data/precos.js` é fonte única para preços e acessórios
-- **Utilitários extraídos**: lógica de cálculo e CAD fora das páginas
-- **Stubs preparados**: `agenda.jsx` e `clientes.jsx` têm UI inicial com dados mock
+### Objetivo
+Fazer o app parecer um aplicativo nativo premium — eliminar aparência de browser.
 
-## Próximas etapas sugeridas
+### Melhorias implementadas
 
-- **ETAPA 2**: Componentização (NavBar, Header, OrcCard como componentes isolados)
-- **ETAPA 3**: Persistência de dados (localStorage ou API)
-- **ETAPA 4**: Implementação real de Agenda e Clientes
-- **ETAPA 5**: Modo admin / configurações editáveis
+**Splash Screen**
+- Halo de luz animado por trás do ícone
+- Shimmer dourado no ícone (reflexo de luz)
+- Saída com blur + scale (como apps nativos)
+- Barra de progresso com gradiente animado
+- Fonte Outfit carregada na splash
 
-## Como rodar
+**App Shell**
+- Fonte Outfit em toda a UI (substitui system-font genérica)
+- CSS Variables centralizadas e expandidas
+- `overscroll-behavior: none` — sem bounce de browser
+- `user-select: none` — sem seleção acidental de texto
+- Scrollbar oculta nas páginas
+
+**Header**
+- Glassmorphism com `backdrop-filter: blur(20px)`
+- Borda inferior com gradiente dourado (não mais linha sólida)
+- Ícone/logo com glow dourado e active state
+- Mais altura e hierarquia visual
+
+**Navegação (NavBar)**
+- Glassmorphism: `backdrop-filter: blur(24px)`
+- Borda superior com gradiente (não mais linha sólida)
+- Item ativo: pill de fundo dourado sutil
+- Ícone ativo: cresce com animação spring (navIconPop)
+- Ponto indicador animado acima do item ativo
+- Botão CTA "Orçamento" com gradiente e sombra dourada
+- `touch-action: manipulation` — sem delay 300ms no iOS
+
+**Transições de página**
+- Cada troca de aba dispara `pageEnter` (slide + fade + scale)
+- `key={pageKey}` garante re-mount e nova animação a cada navegação
+- Durations reduzidos para parecer mais responsivo
+
+**Tela Inicial (Dashboard)**
+- Banner hero com gradiente em camadas e detalhe circular decorativo
+- Badge "Aberto" com ponto verde pulsante
+- Ícones dos atalhos com cor individual por categoria
+- Ícones de informações com caixas coloridas por tipo
+- Entrada escalonada: cada item entra com delay progressivo
+
+## Dev
 
 ```bash
-# Instalar dependências (Vite + React)
-npm create vite@latest . -- --template react
 npm install
-
-# Copiar os arquivos src/ para dentro do projeto
 npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+npm run preview
 ```

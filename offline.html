@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Ceará Planejados — Offline</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:    #12121C;
+      --card:  #1C1C2A;
+      --gold:  #D4AF37;
+      --gold2: #F0C842;
+      --txt:   #E8E8F0;
+      --sub:   #8888AA;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--txt);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+
+    .wrap {
+      padding: 2rem;
+      max-width: 340px;
+      width: 100%;
+    }
+
+    .icon-ring {
+      width: 96px;
+      height: 96px;
+      border-radius: 24px;
+      background: var(--card);
+      border: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 3rem;
+      box-shadow: 0 0 32px rgba(212,175,55,0.15);
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: .5rem;
+    }
+
+    .company {
+      font-size: .85rem;
+      color: var(--sub);
+      margin-bottom: 2rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid rgba(212,175,55,0.15);
+      margin-bottom: 1.5rem;
+    }
+
+    .card p {
+      font-size: .95rem;
+      color: var(--sub);
+      line-height: 1.6;
+    }
+
+    .card strong {
+      color: var(--txt);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      font-size: .8rem;
+      color: var(--sub);
+      margin-bottom: 1.5rem;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #FF4444;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: .85rem;
+      border-radius: 12px;
+      border: none;
+      background: var(--gold);
+      color: #12121C;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: opacity .2s;
+    }
+
+    .btn:active { opacity: .85; }
+
+    .info {
+      margin-top: 1.5rem;
+      font-size: .75rem;
+      color: var(--sub);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="icon-ring">🪨</div>
+    <h1>Sem conexão</h1>
+    <p class="company">Ceará Planejados · Vidraçaria</p>
+
+    <div class="status">
+      <div class="dot"></div>
+      <span>Você está offline no momento</span>
+    </div>
+
+    <div class="card">
+      <p>
+        <strong>Seus dados estão seguros.</strong><br /><br />
+        Orçamentos, clientes e registros salvos continuam disponíveis no dispositivo.
+        Reconecte-se para sincronizar qualquer alteração.
+      </p>
+    </div>
+
+    <button class="btn" onclick="window.location.reload()">
+      Tentar novamente
+    </button>
+
+    <p class="info">
+      Dados salvos localmente (IndexedDB) estão íntegros e acessíveis offline.
+    </p>
+  </div>
+
+  <script>
+    // Recarrega automaticamente quando voltar a conexão
+    window.addEventListener('online', () => window.location.reload());
+  </script>
+</body>
+</html>

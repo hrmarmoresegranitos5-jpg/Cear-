@@ -1,26 +1,46 @@
 // configuracoes.jsx — Configurações / Sobre a Empresa
 // Ceará Planejados — Vidraçaria
 //
-// ETAPA 1: Agrupa a ex-tela "Sobre" e prepara espaço para configurações futuras.
-// Funcionalidades planejadas:
-//   - Edição de dados da empresa (nome, telefone, endereço)
-//   - Configuração de margens e descontos
-//   - Gestão de usuários
-//   - Personalização do app
+// Etapa 7 — Performance:
+//   - memo() no componente
+//   - Dados em arrays estáticos fora do render
+//   - useCallback no handler de WhatsApp
 
-export default function Configuracoes({ logoSrc }) {
-  function abrirWpp() {
+import { useCallback, memo } from 'react';
+
+// ── Dados estáticos ───────────────────────────────────────────────────────────
+const DIFERENCIAIS = [
+  { ic: '🏆', ttl: 'Qualidade',  sub: 'Vidros certificados'          },
+  { ic: '🔧', ttl: 'Instalação', sub: 'Profissional especializado'   },
+  { ic: '⚡', ttl: 'Agilidade',  sub: 'Prazo cumprido'               },
+  { ic: '💬', ttl: 'Suporte',    sub: 'Atendimento direto'           },
+];
+
+const CONTATOS = [
+  { ic: '⏰', lbl: 'Horário',    val: 'Seg–Sex 8h–18h · Sáb 8h–13h'      },
+  { ic: '🚛', lbl: 'Frete',     val: 'Grátis até 20 km · Acima sob consulta' },
+  { ic: '💳', lbl: 'Pagamento', val: 'PIX · Dinheiro · Cartão · Parcelado'   },
+  { ic: '📐', lbl: 'Medição',   val: 'Visita técnica disponível'             },
+];
+
+const SERVICOS = [
+  ['🚪','Portas de Vidro'], ['🪟','Janelas'],
+  ['🛁','Box de Banheiro'], ['🪞','Espelhos'],
+  ['🏗️','Guarda Corpo'],   ['🪵','Marcenaria'],
+  ['⚙️','Serralheria'],    ['🔆','Vidros Comuns'],
+];
+
+// ── Componente principal memoizado ────────────────────────────────────────────
+const Configuracoes = memo(function Configuracoes() {
+  const abrirWpp = useCallback(() => {
     window.open('https://wa.me/5585999999999', '_blank');
-  }
+  }, []);
 
   return (
     <div id="pgConfiguracoes" className="pg on">
 
-      {/* Hero / identidade */}
+      {/* Hero */}
       <div className="sobre-hero">
-        <div className="sobre-logo">
-          <img src={logoSrc} alt="Ceará Planejados" />
-        </div>
         <div className="sobre-nm">Ceará Planejados</div>
         <div className="sobre-sub">Vidraçaria · Marcenaria · Serralheria</div>
       </div>
@@ -29,13 +49,8 @@ export default function Configuracoes({ logoSrc }) {
 
         {/* Diferenciais */}
         <div className="garantia-grid">
-          {[
-            { ic: '🏆', ttl: 'Qualidade',   sub: 'Vidros certificados' },
-            { ic: '🔧', ttl: 'Instalação',  sub: 'Profissional especializado' },
-            { ic: '⚡', ttl: 'Agilidade',   sub: 'Prazo cumprido' },
-            { ic: '💬', ttl: 'Suporte',     sub: 'Atendimento direto' },
-          ].map((g, i) => (
-            <div key={i} className="garantia-card">
+          {DIFERENCIAIS.map(g => (
+            <div key={g.ttl} className="garantia-card">
               <div className="garantia-ic">{g.ic}</div>
               <div className="garantia-ttl">{g.ttl}</div>
               <div className="garantia-sub">{g.sub}</div>
@@ -46,13 +61,8 @@ export default function Configuracoes({ logoSrc }) {
         {/* Contato */}
         <div className="section-ttl">Contato &amp; Informações</div>
         <div className="card" style={{ padding: '6px 16px' }}>
-          {[
-            { ic: '⏰', lbl: 'Horário',   val: 'Seg–Sex 8h–18h · Sáb 8h–13h' },
-            { ic: '🚛', lbl: 'Frete',     val: 'Grátis até 20 km · Acima sob consulta' },
-            { ic: '💳', lbl: 'Pagamento', val: 'PIX · Dinheiro · Cartão · Parcelado' },
-            { ic: '📐', lbl: 'Medição',   val: 'Visita técnica disponível' },
-          ].map((item, i) => (
-            <div key={i} className="info-item">
+          {CONTATOS.map(item => (
+            <div key={item.lbl} className="info-item">
               <span className="info-ic">{item.ic}</span>
               <div className="info-body">
                 <div className="info-lbl">{item.lbl}</div>
@@ -66,13 +76,8 @@ export default function Configuracoes({ logoSrc }) {
         <div className="section-ttl" style={{ marginTop: '20px' }}>Nossos Serviços</div>
         <div className="card">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-            {[
-              ['🚪', 'Portas de Vidro'], ['🪟', 'Janelas'],
-              ['🛁', 'Box de Banheiro'], ['🪞', 'Espelhos'],
-              ['🏗️', 'Guarda Corpo'],   ['🪵', 'Marcenaria'],
-              ['⚙️', 'Serralheria'],    ['🔆', 'Vidros Comuns'],
-            ].map(([ic, nome], i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+            {SERVICOS.map(([ic, nome]) => (
+              <div key={nome} style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
                 <span>{ic}</span>
                 <span style={{ fontSize: '.78rem', color: 'var(--t2)' }}>{nome}</span>
               </div>
@@ -87,7 +92,7 @@ export default function Configuracoes({ logoSrc }) {
 
         <div className="divider" style={{ marginTop: '24px' }} />
 
-        {/* Seção de configurações (em desenvolvimento) */}
+        {/* Configurações placeholder */}
         <div className="section-ttl" style={{ marginTop: '4px' }}>Configurações do App</div>
         <div className="card" style={{
           background: 'linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02))',
@@ -105,10 +110,9 @@ export default function Configuracoes({ logoSrc }) {
           </div>
         </div>
 
-        {/* Versão */}
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <div style={{ fontSize: '.55rem', color: 'var(--t4)', letterSpacing: '2px', textTransform: 'uppercase' }}>
-            Ceará Planejados · v4.0
+            Ceará Planejados · v7.0
           </div>
         </div>
       </div>
@@ -116,4 +120,6 @@ export default function Configuracoes({ logoSrc }) {
       <div style={{ height: '80px' }} />
     </div>
   );
-}
+});
+
+export default Configuracoes;
