@@ -9,6 +9,9 @@
 <meta name="apple-mobile-web-app-title" content="Ceará">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+
 <title>Ceará Planejados</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1290,7 +1293,8 @@ function showModalEditar(orc, onSalvar) {
 
 function showSplash(onDone) {
   // Esconde o app enquanto o splash roda
-  document.getElementById('sApp').style.display = 'none';
+  const sAppEl = document.getElementById('sApp');
+  if (sAppEl) sAppEl.style.display = 'none';
 
   const splash = document.createElement('div');
   splash.id = 'splash';
@@ -1378,7 +1382,8 @@ function showSplash(onDone) {
     setTimeout(() => {
       splash.remove();
       style.remove();
-      document.getElementById('sApp').style.display = '';
+      const sApp2 = document.getElementById('sApp');
+      if (sApp2) sApp2.style.display = '';
       onDone();
     }, 380);
   }, 1800);
@@ -1388,32 +1393,55 @@ function showSplash(onDone) {
 // INIT
 // ════════════════════════════════════════════════════════════
 
-// Header date
-function getDataHdr() {
-  const d = new Date();
-  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  return `${dias[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`;
+function initApp() {
+  try {
+    // Header date
+    function getDataHdr() {
+      const d = new Date();
+      const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+      return `${dias[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`;
+    }
+    const hdrDataEl = document.getElementById('hdrData');
+    if (hdrDataEl) hdrDataEl.textContent = getDataHdr();
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+      });
+    }
+
+    // Destino inicial: respeita atalho PWA (?pg=...) mas nunca no carregamento normal
+    const urlParams = new URLSearchParams(window.location.search);
+    const pgParam = urlParams.get('pg');
+    const paginaInicial = (pgParam && NAV_ITEMS.some(n => n.id === pgParam)) ? pgParam : 'home';
+
+    // Garante que o #sApp existe antes de rodar o splash
+    const sAppEl = document.getElementById('sApp');
+    if (!sAppEl) { console.error('Ceará: #sApp não encontrado'); return; }
+
+    // Mostra splash, depois monta o app
+    showSplash(() => {
+      paginaAtiva = paginaInicial;
+      buildNav();
+      renderPage();
+    });
+
+  } catch(err) {
+    // Se houver erro, mostra o app diretamente sem splash
+    console.error('Ceará init error:', err);
+    const sApp = document.getElementById('sApp');
+    if (sApp) sApp.style.display = '';
+    try { buildNav(); renderPage(); } catch(e2) { console.error('Ceará render error:', e2); }
+  }
 }
-document.getElementById('hdrData').textContent = getDataHdr();
 
-// Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
-  });
+// Inicia quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
 }
-
-// Destino inicial: respeita atalho PWA (?pg=...) mas nunca no carregamento normal
-const urlParams = new URLSearchParams(window.location.search);
-const pgParam = urlParams.get('pg');
-const paginaInicial = (pgParam && NAV_ITEMS.some(n => n.id === pgParam)) ? pgParam : 'home';
-
-// Mostra splash, depois monta o app
-showSplash(() => {
-  paginaAtiva = paginaInicial;
-  buildNav();
-  renderPage();
-});
 </script>
 </body>
 </html>
