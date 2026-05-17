@@ -95,8 +95,16 @@
         #0E0E1A;
     }
 
-    /* Saída controlada via JS com style inline — sem depender de animationend */
-    #splash { will-change: opacity, transform; }
+    #splash.hiding {
+      animation: splashOut .42s cubic-bezier(.4,0,.6,1) forwards;
+      pointer-events: none;
+    }
+    #splash.hidden { display: none; }
+
+    @keyframes splashOut {
+      0%   { opacity: 1; transform: scale(1);    filter: blur(0); }
+      100% { opacity: 0; transform: scale(1.05); filter: blur(5px); }
+    }
 
     /* Halo de luz por trás do ícone */
     .sp-halo {
@@ -228,7 +236,6 @@
 
   <!-- ── SW + Splash control ──────────────────────────────────────────────── -->
   <script>
-    // ── Service Worker ────────────────────────────────────────────────────────
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker
@@ -246,61 +253,26 @@
       });
     }
 
-    // ── Splash control — à prova de falha ────────────────────────────────────
-    (function () {
-      const splash = document.getElementById('splash');
-      const root   = document.getElementById('root');
-      const MIN_MS = 1400;   // tempo mínimo de exibição (ms) — deixa animação terminar
-      const MAX_MS = 5000;   // tempo máximo absoluto — nunca trava mais que isso
-      const t0     = Date.now();
-      let   done   = false;
+    const splash  = document.getElementById('splash');
+    const root    = document.getElementById('root');
+    const MIN_MS  = 920;
+    const t0      = Date.now();
 
-      function removeSplash() {
-        // Garante execução única mesmo se chamado múltiplas vezes
-        if (done) return;
-        done = true;
+    function hideSplash() {
+      const wait = Math.max(0, MIN_MS - (Date.now() - t0));
+      setTimeout(() => {
+        splash.classList.add('hiding');
+        const done = () => splash.classList.add('hidden');
+        splash.addEventListener('animationend', done, { once: true });
+        setTimeout(done, 500); // fallback
+      }, wait);
+    }
 
-        const elapsed = Date.now() - t0;
-        const delay   = Math.max(0, MIN_MS - elapsed);
-
-        setTimeout(function () {
-          // Inicia fade-out
-          splash.style.transition = 'opacity .45s ease, transform .45s ease';
-          splash.style.opacity    = '0';
-          splash.style.transform  = 'scale(1.04)';
-          splash.style.pointerEvents = 'none';
-
-          // Remove do DOM após a transição — com fallback duplo
-          var t1 = setTimeout(killSplash, 520);
-          splash.addEventListener('transitionend', function onEnd() {
-            splash.removeEventListener('transitionend', onEnd);
-            clearTimeout(t1);
-            killSplash();
-          }, { once: true });
-        }, delay);
-      }
-
-      function killSplash() {
-        splash.style.display = 'none';
-        // Para animações infinitas internas (halo, shimmer) — libera GPU
-        splash.getAnimations && splash.getAnimations().forEach(function(a){ a.cancel(); });
-      }
-
-      // Dispara quando React montar o primeiro filho no #root
-      var obs = new MutationObserver(function () {
-        if (root.children.length > 0) {
-          obs.disconnect();
-          removeSplash();
-        }
-      });
-      obs.observe(root, { childList: true });
-
-      // Failsafe absoluto: nunca fica preso mais que MAX_MS
-      setTimeout(function () {
-        obs.disconnect();
-        removeSplash();
-      }, MAX_MS);
-    })();
+    const obs = new MutationObserver(() => {
+      if (root.children.length > 0) { obs.disconnect(); hideSplash(); }
+    });
+    obs.observe(root, { childList: true });
+    setTimeout(() => { obs.disconnect(); hideSplash(); }, 3000);
   </script>
 
 </body>
