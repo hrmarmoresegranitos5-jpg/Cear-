@@ -1,307 +1,1318 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0E0E1A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ceará">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Ceará Planejados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; background: #0E0E1A; }
+body { font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; }
 
-  <!-- ── Performance: DNS prefetch / preconnect ───────────────────────────── -->
-  <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
 
-  <!-- Fonte premium -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+/* ── CSS Variables ── */
+:root {
+  --bg:    #0E0E1A; --bg2: #131320; --s1: #16162A; --s2: #1A1A2E; --s3: #1E1E34; --s4: #22223A;
+  --gold:  #C9A84C; --gold2: #EDD060; --gold3: rgba(212,175,55,0.12); --gold4: rgba(212,175,55,0.06);
+  --grn:   #3A9E6A; --grn2: rgba(58,158,106,0.12);
+  --tx:    #EDEAE0; --t2: #B8B4A8; --t3: #7A7880; --t4: #4E4C58;
+  --red:   #E05555; --red2: rgba(224,85,85,0.12);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.4); --shadow-md: 0 4px 20px rgba(0,0,0,0.55); --shadow-lg: 0 8px 40px rgba(0,0,0,0.7);
+  --border: 1px solid rgba(255,255,255,0.06); --border-g: 1px solid rgba(212,175,55,0.2);
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-xl: 26px;
+}
 
-  <!-- ── Performance: evita FOUC ─────────────────────────────────────────── -->
-  <meta name="color-scheme" content="dark" />
+/* ── Keyframes ── */
+@keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{transform:translateY(18px);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes scaleIn { from{transform:scale(.94);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:.4} }
+@keyframes pageEnter { 0%{opacity:0;transform:translateY(10px) scale(.99)} 60%{opacity:1;transform:translateY(-2px) scale(1.001)} 100%{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes navIconPop { 0%{transform:scale(1) translateY(0)} 40%{transform:scale(1.25) translateY(-3px)} 70%{transform:scale(.95) translateY(1px)} 100%{transform:scale(1.12) translateY(0)} }
+@keyframes springIn { 0%{transform:scale(.88);opacity:0} 55%{transform:scale(1.04);opacity:1} 80%{transform:scale(.98)} 100%{transform:scale(1);opacity:1} }
+@keyframes shimmer { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+@keyframes slideDown { from{transform:translateY(-10px);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes modalUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+@keyframes toastIn { from{transform:translateX(-50%) translateY(20px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
 
-  <!-- ── Viewport ────────────────────────────────────────────────────────── -->
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover,
-                 maximum-scale=1.0, user-scalable=no" />
+/* ── App Layout ── */
+#sApp { display:flex; flex-direction:column; height:100%; background:var(--bg); position:relative; }
+#hdrAndPages { flex:1; display:flex; flex-direction:column; min-height:0; overflow:hidden; }
 
-  <title>Ceará Planejados</title>
+/* ── Header ── */
+#hdr {
+  display:flex; align-items:center; gap:12px; padding:12px 20px;
+  background:rgba(14,14,26,0.85); backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  border-bottom:1px solid transparent; background-clip:padding-box;
+  position:relative; z-index:50; flex-shrink:0;
+}
+#hdr::after { content:''; position:absolute; bottom:0;left:0;right:0; height:1px; background:linear-gradient(90deg,transparent 0%,rgba(212,175,55,0.3) 30%,rgba(212,175,55,0.5) 50%,rgba(212,175,55,0.3) 70%,transparent 100%); }
+.hlogo { width:36px;height:36px;border-radius:10px;background:linear-gradient(145deg,#1E1E30,#14141F);border:1px solid rgba(212,175,55,0.35);display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 0 14px rgba(212,175,55,0.1),var(--shadow-sm);flex-shrink:0;cursor:pointer;transition:transform 160ms cubic-bezier(.34,1.56,.64,1); }
+.hlogo:active { transform:scale(.9); }
+.hnm { flex:1;font-size:.95rem;font-weight:700;color:var(--tx);letter-spacing:.01em;display:flex;flex-direction:column; }
+.hsub { font-size:.62rem;font-weight:500;color:var(--t4);letter-spacing:.04em;margin-top:1px; }
+.hdt { font-size:.72rem;font-weight:500;color:var(--t3);letter-spacing:.02em;flex-shrink:0; }
 
-  <!-- ── PWA ─────────────────────────────────────────────────────────────── -->
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#0E0E1A" />
-  <meta name="msapplication-navbutton-color" content="#0E0E1A" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Ceará" />
+/* ── Pages ── */
+#pages { flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;scrollbar-width:none; }
+#pages::-webkit-scrollbar { display:none; }
+.pg { padding:20px 18px 0; animation:pageEnter 240ms cubic-bezier(.25,.46,.45,.94) both; will-change:opacity,transform; }
 
-  <!-- ── Ícones iOS ───────────────────────────────────────────────────────── -->
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-  <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
-  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
+/* ── NavBar ── */
+#nav {
+  display:flex;align-items:stretch;
+  background:rgba(14,14,26,0.92);backdrop-filter:blur(24px) saturate(1.6);
+  -webkit-backdrop-filter:blur(24px) saturate(1.6);
+  padding-bottom:env(safe-area-inset-bottom,0px);position:relative;z-index:100;flex-shrink:0;
+}
+#nav::before { content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(212,175,55,0.2) 20%,rgba(212,175,55,0.4) 50%,rgba(212,175,55,0.2) 80%,transparent 100%); }
+.ni { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;border:none;background:transparent;cursor:pointer;position:relative;min-height:60px;outline:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation; }
+.ni-ic-wrap { position:relative;display:flex;align-items:center;justify-content:center;width:44px;height:32px;border-radius:16px;transition:background 200ms ease;margin-bottom:4px; }
+.ni.on .ni-ic-wrap { background:rgba(212,175,55,0.14); }
+.ni-i { font-size:1.25rem;display:block;transition:transform 200ms cubic-bezier(.34,1.56,.64,1);line-height:1; }
+.ni.on .ni-i { transform:scale(1.18) translateY(-1px);animation:navIconPop 300ms cubic-bezier(.34,1.56,.64,1) both; }
+.ni-l { font-size:.6rem;font-weight:500;color:var(--t4);letter-spacing:.02em;transition:color 160ms ease;line-height:1;white-space:nowrap; }
+.ni.on .ni-l { color:var(--gold);font-weight:700; }
+.ni.on::after { content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(212,175,55,0.6);animation:fadeIn 200ms ease both; }
+.ni-cta .ni-ic-wrap { width:52px;height:36px;border-radius:18px;background:linear-gradient(145deg,#C9A84C,#A88030);box-shadow:0 2px 12px rgba(180,140,40,0.35); }
+.ni-cta.on .ni-ic-wrap { background:linear-gradient(145deg,#EDD060,#C9A84C);box-shadow:0 4px 18px rgba(212,175,55,0.45); }
+.ni-cta:active .ni-ic-wrap { transform:scale(.92); }
+.ni-cta .ni-i { font-size:1.15rem; }
+.ni-cta.on .ni-l { color:var(--gold2); }
 
-  <!-- ── Splash iOS ───────────────────────────────────────────────────────── -->
-  <link rel="apple-touch-startup-image" href="/splash/splash-750x1334.png"
-        media="(device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2)" />
-  <link rel="apple-touch-startup-image" href="/splash/splash-1170x2532.png"
-        media="(device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3)" />
-  <link rel="apple-touch-startup-image" href="/splash/splash-1290x2796.png"
-        media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3)" />
+/* ── Cards ── */
+.card { background:var(--s2);border:var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:14px;box-shadow:var(--shadow-sm);transition:transform 120ms ease,box-shadow 120ms ease; }
+.card:active { transform:scale(.99); }
+.section { margin-bottom:20px; }
+.section-ttl { font-size:.7rem;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;padding-left:2px; }
+.hero { margin-bottom:22px; }
+.hero-ttl { font-size:1.5rem;font-weight:800;color:var(--tx);letter-spacing:-.01em; }
+.hero-sub { font-size:.78rem;color:var(--t3);margin-top:4px;font-weight:400; }
 
-  <!-- ── Favicons ─────────────────────────────────────────────────────────── -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+/* ── Buttons ── */
+.btn { display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--r-sm);padding:11px 18px;font-size:.82rem;font-weight:700;font-family:var(--font);cursor:pointer;transition:transform 120ms cubic-bezier(.34,1.56,.64,1),opacity 120ms ease,box-shadow 120ms ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;outline:none;font-family:'Outfit',sans-serif; }
+.btn:active { transform:scale(.95);opacity:.9; }
+.btn-gold  { background:linear-gradient(145deg,#C9A84C,#A88030);color:#0E0E1A;box-shadow:0 2px 10px rgba(180,140,40,.3); }
+.btn-grn   { background:linear-gradient(145deg,#3A9E6A,#2E7D52);color:#fff;box-shadow:0 2px 10px rgba(58,158,106,.25); }
+.btn-ghost { background:rgba(255,255,255,.06);color:var(--t2);border:var(--border); }
+.btn-red   { background:linear-gradient(145deg,#E05555,#B83B3B);color:#fff; }
+.btn-full  { width:100%; }
+.btn-sm    { padding:8px 13px;font-size:.76rem;border-radius:8px; }
 
-  <!-- ── SEO ──────────────────────────────────────────────────────────────── -->
-  <meta name="description" content="Sistema de orçamento para vidraçaria e marcenaria — Ceará Planejados" />
-  <meta name="robots" content="noindex" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="mobile-web-app-capable" content="yes" />
+/* ── Quick Action Grid ── */
+.qa-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.qa-btn { display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--s2);border:var(--border);border-radius:var(--r-md);cursor:pointer;transition:transform 130ms cubic-bezier(.34,1.56,.64,1),background 130ms ease,border-color 130ms ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;animation:slideUp 160ms ease both; }
+.qa-btn:active { transform:scale(.96);background:var(--s3);border-color:rgba(212,175,55,0.2); }
+.qa-ic { font-size:1.45rem;width:42px;height:42px;border-radius:12px;background:var(--gold4);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.qa-nm { font-size:.79rem;font-weight:700;color:var(--tx);line-height:1.3; }
+.qa-sm { font-size:.65rem;font-weight:400;color:var(--t3);margin-top:2px; }
 
-  <!-- ── Base + Splash Premium ────────────────────────────────────────────── -->
-  <style>
-    /* GPU hints */
-    #nav { will-change: transform; transform: translateZ(0); }
-    #hdr { will-change: transform; transform: translateZ(0); }
+/* ── Info items ── */
+.info-item { display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04); }
+.info-item:last-child { border-bottom:none; }
+.info-ic { font-size:1.2rem;width:36px;height:36px;border-radius:10px;background:var(--s3);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.info-lbl { font-size:.7rem;font-weight:600;color:var(--t3);margin-bottom:2px; }
+.info-val { font-size:.78rem;font-weight:500;color:var(--t2); }
+.info-body {}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Stat cards ── */
+.stat-card { flex:1;background:rgba(0,0,0,0.2);border:1px solid rgba(212,175,55,0.1);border-radius:var(--r-md);padding:12px 8px;text-align:center; }
+.stat-val { font-size:1.3rem;font-weight:800;color:var(--gold2);line-height:1;margin-bottom:4px; }
+.stat-lbl { font-size:.6rem;font-weight:500;color:var(--t4);letter-spacing:.04em; }
 
-    html, body {
-      height: 100%;
-      background: #0E0E1A;
-      overflow: hidden;
-      overscroll-behavior: none;
-      -webkit-overflow-scrolling: touch;
-    }
+/* ── Home Banner ── */
+.home-banner { border-radius:var(--r-xl);padding:20px 20px 0;margin-bottom:22px;background:linear-gradient(160deg,rgba(212,175,55,0.08) 0%,transparent 50%),linear-gradient(to bottom,#1A1A2C,#131320);border:1px solid rgba(212,175,55,0.15);box-shadow:var(--shadow-md),inset 0 1px 0 rgba(212,175,55,0.08);overflow:hidden;position:relative; }
+.home-banner::before { content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,0.08) 0%,transparent 70%);pointer-events:none; }
+.home-banner-nm { font-size:1.25rem;font-weight:800;color:var(--tx);letter-spacing:-.01em;margin-bottom:3px; }
+.home-banner-sub { font-size:.72rem;color:var(--t3);font-weight:400;letter-spacing:.02em; }
+.home-stats { display:flex;gap:8px;padding:14px 0 20px;border-top:1px solid rgba(255,255,255,0.05); }
 
-    /* Sem seleção de texto acidental (app nativo) */
-    body { user-select: none; -webkit-user-select: none; }
-    input, textarea { user-select: text; -webkit-user-select: text; }
+/* ── Badges ── */
+.badge { display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:.64rem;font-weight:700;background:rgba(255,255,255,.06);color:var(--t2);letter-spacing:.02em; }
+.badge-grn  { background:var(--grn2);color:var(--grn); }
+.badge-gold { background:var(--gold3);color:var(--gold); }
+.badge-red  { background:var(--red2);color:var(--red); }
 
-    #root {
-      height: 100%;
-      padding-top:    env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-      padding-left:   env(safe-area-inset-left);
-      padding-right:  env(safe-area-inset-right);
-    }
+/* ── Tables ── */
+.tbl { width:100%;border-collapse:collapse; }
+.tbl th,.tbl td { padding:9px 4px;text-align:left;font-size:.76rem; }
+.tbl th { color:var(--t4);font-weight:600;font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.05); }
+.tbl td { color:var(--t2);border-bottom:1px solid rgba(255,255,255,.03); }
+.tbl tr:last-child td { border-bottom:none; }
+.tbl td:last-child,.tbl th:last-child { text-align:right;color:var(--gold);font-weight:700; }
 
-    /* ──── SPLASH SCREEN PREMIUM ──────────────────────────────────────────── */
-    #splash {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 35%, rgba(212,175,55,0.07) 0%, transparent 65%),
-        radial-gradient(ellipse 100% 70% at 50% 100%, rgba(20,10,50,0.7) 0%, transparent 55%),
-        #0E0E1A;
-    }
+/* ── Fields ── */
+.divider { height:1px;background:rgba(255,255,255,.05);margin:12px 0; }
+.field { margin-bottom:14px; }
+.field label { display:block;font-size:.7rem;font-weight:600;color:var(--t3);margin-bottom:6px;letter-spacing:.03em; }
+input[type=text],input[type=number],input[type=email],input[type=tel],input[type=date],select,textarea {
+  width:100%;background:var(--s3);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-sm);padding:12px 14px;font-family:'Outfit',sans-serif;font-size:.86rem;color:var(--tx);outline:none;appearance:none;-webkit-appearance:none;transition:border-color 150ms ease,box-shadow 150ms ease;
+}
+input:focus,select:focus,textarea:focus { border-color:rgba(212,175,55,0.4);box-shadow:0 0 0 3px rgba(212,175,55,0.08); }
+::placeholder { color:var(--t4); }
+input[type=date] { color-scheme:dark; }
 
-    /* Saída controlada via JS com style inline — sem depender de animationend */
-    #splash { will-change: opacity, transform; }
+/* ── Orçamento page ── */
+.orc-tipos { display:flex;overflow-x:auto;gap:8px;padding-bottom:8px;margin-bottom:18px;scrollbar-width:none; }
+.orc-tipos::-webkit-scrollbar { display:none; }
+.orc-tipo-btn { flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 14px;background:var(--s2);border:var(--border);border-radius:var(--r-md);cursor:pointer;transition:background 130ms ease,border-color 130ms ease,transform 130ms ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;outline:none; }
+.orc-tipo-btn.active { background:var(--gold3);border-color:rgba(212,175,55,0.4); }
+.orc-tipo-btn:active { transform:scale(.95); }
+.orc-tipo-ic { font-size:1.4rem;line-height:1; }
+.orc-tipo-lbl { font-size:.6rem;font-weight:600;color:var(--t3);letter-spacing:.02em;white-space:nowrap; }
+.orc-tipo-btn.active .orc-tipo-lbl { color:var(--gold); }
+.orc-result { background:linear-gradient(135deg,rgba(212,175,55,0.07),rgba(212,175,55,0.03));border:1px solid rgba(212,175,55,0.2);border-radius:var(--r-lg);padding:18px 16px;margin-bottom:14px;animation:scaleIn .18s ease both; }
+.orc-total { font-size:2rem;font-weight:800;color:var(--gold2);letter-spacing:-.02em;line-height:1;margin-bottom:4px; }
+.orc-avista { font-size:.72rem;color:var(--grn);font-weight:600;margin-bottom:14px; }
+.orc-linhas { border-top:1px solid rgba(255,255,255,.05);padding-top:12px; }
+.orc-linha { display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:.73rem;color:var(--t3);border-bottom:1px solid rgba(255,255,255,.03); }
+.orc-linha:last-child { border-bottom:none; }
+.orc-linha span:last-child { color:var(--t2);font-weight:600; }
+.orc-cad { width:100%;border-radius:var(--r-md);background:rgba(0,0,0,.3);border:1px solid rgba(100,200,255,0.1);margin-bottom:14px;display:block; }
+.orc-accs { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px; }
+.orc-acc-btn { display:flex;align-items:center;gap:6px;padding:7px 12px;background:var(--s2);border:var(--border);border-radius:20px;cursor:pointer;font-size:.7rem;font-weight:600;color:var(--t3);transition:background 120ms ease,border-color 120ms ease;-webkit-tap-highlight-color:transparent;outline:none; }
+.orc-acc-btn.on { background:var(--gold3);border-color:rgba(212,175,55,0.35);color:var(--gold); }
+.orc-acc-btn.obrig { opacity:.5;cursor:default; }
+.orc-saved { display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--r-md);background:rgba(58,158,106,0.1);border:1px solid rgba(58,158,106,0.25);font-size:.72rem;font-weight:600;color:var(--grn);animation:slideUp .22s ease both;margin-bottom:10px; }
+.campo-row { display:flex;gap:10px; }
+.campo-row .field { flex:1; }
 
-    /* Halo de luz por trás do ícone */
-    .sp-halo {
-      position: absolute;
-      width: 200px; height: 200px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(212,175,55,0.13) 0%, transparent 70%);
-      animation: spHalo 2.6s ease-in-out infinite;
-    }
-    @keyframes spHalo {
-      0%,100% { transform: scale(1);   opacity:.5; }
-      50%     { transform: scale(1.3); opacity:1;  }
-    }
+/* ── Historico ── */
+.hist-wrap { display:flex;flex-direction:column;height:100%;overflow:hidden; }
+.hist-head { flex-shrink:0;padding:16px 16px 0; }
+.hist-titulo { font-size:1rem;font-weight:700;color:var(--tx);margin-bottom:12px; }
+.hist-filtros { display:flex;gap:8px;margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px; }
+.hist-filtros::-webkit-scrollbar { display:none; }
+.hist-chip { flex-shrink:0;display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:50px;border:1px solid rgba(255,255,255,.08);background:var(--s2);font-size:.68rem;font-weight:600;color:var(--t3);cursor:pointer;transition:all .15s;white-space:nowrap;outline:none; }
+.hist-chip.on { background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.3);color:var(--gold); }
+.hist-busca { position:relative;margin-bottom:10px; }
+.hist-busca-ic { position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.85rem;pointer-events:none; }
+.hist-busca input { width:100%;box-sizing:border-box;padding:10px 12px 10px 34px;background:var(--s2);border:1px solid rgba(255,255,255,.07);border-radius:10px;font-size:.78rem;color:var(--tx);outline:none;font-family:'Outfit',sans-serif; }
+.hist-busca input:focus { border-color:rgba(201,168,76,.3);background:var(--s3); }
+.hist-date-row { display:flex;gap:8px;margin-bottom:10px; }
+.hist-date-group { flex:1;display:flex;flex-direction:column; }
+.hist-date-lbl { font-size:.62rem;color:var(--t4);margin-bottom:3px; }
+.hist-date-row input[type=date] { flex:1;padding:9px 10px;background:var(--s2);border:1px solid rgba(255,255,255,.07);border-radius:10px;font-size:.72rem;color:var(--tx);outline:none;font-family:'Outfit',sans-serif;color-scheme:dark; }
+.hist-resumo { font-size:.64rem;color:var(--t4);padding:0 2px 8px; }
+.hist-list { flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch;scrollbar-width:none; }
+.hist-list::-webkit-scrollbar { display:none; }
+.hist-empty { display:flex;flex-direction:column;align-items:center;justify-content:center;height:160px;font-size:.76rem;color:var(--t4);text-align:center;line-height:1.8;gap:8px; }
+.hist-empty-ic { font-size:2rem; }
+.orc-card { background:var(--s2);border:1px solid rgba(255,255,255,.06);border-radius:14px;margin-bottom:10px;overflow:hidden;animation:fadeIn .2s ease both; }
+.orc-card-top { display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer; }
+.orc-card-ic { width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0; }
+.orc-card-info { flex:1;min-width:0; }
+.orc-card-titulo { font-size:.82rem;font-weight:700;color:var(--tx);margin-bottom:2px; }
+.orc-card-sub { font-size:.65rem;color:var(--t3); }
+.orc-card-total { text-align:right;flex-shrink:0; }
+.orc-card-valor { font-size:.88rem;font-weight:800;color:var(--gold2); }
+.orc-card-data { font-size:.58rem;color:var(--t4);margin-top:2px; }
+.orc-card-expand { padding:0 14px 12px;border-top:1px solid rgba(255,255,255,.04); }
+.orc-card-detail { padding:8px 0 4px; }
+.orc-detail-row { display:flex;justify-content:space-between;padding:3px 0;font-size:.69rem;color:var(--t3); }
+.orc-detail-row span:last-child { color:var(--t2); }
+.orc-card-actions { display:flex;gap:8px;padding-top:8px; }
+.orc-act-btn { flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 6px;border-radius:9px;border:none;font-size:.64rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform 120ms ease,opacity 120ms ease;-webkit-tap-highlight-color:transparent; }
+.orc-act-btn:active { transform:scale(.94);opacity:.85; }
+.orc-act-editar { background:rgba(201,168,76,.1);color:var(--gold); }
+.orc-act-dupl { background:rgba(80,160,220,.1);color:#50A0DC; }
+.orc-act-excluir { background:var(--red2);color:var(--red); }
+.hist-toast { position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--s4);color:var(--tx);padding:10px 20px;border-radius:50px;font-size:.75rem;font-weight:700;border:var(--border);box-shadow:var(--shadow-md);animation:toastIn .25s ease both;z-index:500;white-space:nowrap; }
 
-    /* Ícone */
-    .sp-icon-wrap { position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; }
+/* ── Preços ── */
+.price-section { margin-bottom:24px; }
+.price-section-header { margin-bottom:12px; }
+.price-section-header h3 { font-size:.9rem;font-weight:700;color:var(--tx);margin-bottom:3px; }
+.price-section-header p  { font-size:.72rem;color:var(--t3); }
 
-    .sp-icon {
-      position: relative; z-index: 1;
-      width: 104px; height: 104px;
-      border-radius: 26px;
-      background: linear-gradient(145deg, #1E1E30, #14141F);
-      border: 1.5px solid rgba(212,175,55,0.45);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3.5rem;
-      box-shadow:
-        0 0 0 1px rgba(212,175,55,0.08),
-        0 0 50px rgba(212,175,55,0.14),
-        0 12px 40px rgba(0,0,0,0.75),
-        inset 0 1px 0 rgba(255,255,255,0.06);
-      animation: spPop .6s cubic-bezier(.34,1.56,.64,1) both;
-      overflow: hidden;
-    }
-    .sp-icon::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(105deg, transparent 25%, rgba(212,175,55,0.18) 50%, transparent 75%);
-      animation: spShimmer 2.2s .7s ease-in-out infinite;
-    }
+/* ── Config ── */
+.garantia-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px; }
+.garantia-card { background:var(--s2);border:var(--border);border-radius:var(--r-md);padding:16px;text-align:center; }
+.garantia-ic  { font-size:1.6rem;margin-bottom:8px; }
+.garantia-ttl { font-size:.8rem;font-weight:700;color:var(--tx);margin-bottom:4px; }
+.garantia-sub { font-size:.68rem;color:var(--t3);line-height:1.5; }
+.sobre-hero { text-align:center;padding:20px 0 24px; }
+.sobre-nm { font-size:1.4rem;font-weight:800;color:var(--tx);margin-bottom:4px; }
+.sobre-sub { font-size:.76rem;color:var(--t3); }
 
-    @keyframes spPop {
-      from { transform: scale(.45); opacity: 0; filter: blur(8px); }
-      to   { transform: scale(1);   opacity: 1; filter: blur(0); }
-    }
-    @keyframes spShimmer {
-      from { transform: translateX(-110%); }
-      to   { transform: translateX(110%);  }
-    }
+/* ── Modal ── */
+.modal-backdrop { position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);padding:0 0 env(safe-area-inset-bottom); }
+.modal-box { width:100%;max-width:420px;background:var(--s2);border-radius:20px 20px 0 0;border:1px solid rgba(255,255,255,.06);padding:20px 20px 32px;box-shadow:0 -8px 40px rgba(0,0,0,.5);animation:modalUp .22s ease; }
+.modal-titulo { font-size:.82rem;font-weight:700;color:var(--tx);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06); }
+.modal-msg { font-size:.78rem;color:var(--t3);margin-bottom:20px;line-height:1.6; }
+.modal-row { display:flex;gap:10px; }
+.modal-wpp-preview { background:rgba(0,0,0,.25);border-radius:10px;padding:12px;font-size:.68rem;color:var(--t2);line-height:1.7;white-space:pre-wrap;max-height:220px;overflow-y:auto;margin-bottom:16px;font-family:monospace; }
 
-    /* Textos */
-    .sp-name {
-      font-family: 'Outfit', -apple-system, sans-serif;
-      font-size: 1.65rem; font-weight: 700;
-      color: #EDEAE0; letter-spacing: .025em;
-      animation: spUp .5s .28s ease both;
-    }
-    .sp-sub {
-      font-family: 'Outfit', -apple-system, sans-serif;
-      font-size: .7rem;
-      color: rgba(212,175,55,0.55);
-      letter-spacing: .18em; text-transform: uppercase;
-      margin-top: .45rem;
-      animation: spUp .5s .4s ease both;
-    }
-    @keyframes spUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+/* ── Clientes ── */
+.cliente-card { background:var(--s2);border:var(--border);border-radius:var(--r-md);padding:14px 16px;margin-bottom:10px; }
+.cliente-top { display:flex;align-items:center;justify-content:space-between; }
+.cliente-avatar { width:40px;height:40px;border-radius:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0; }
+.cliente-ult { margin-top:10px;padding:8px 10px;background:rgba(0,0,0,.2);border-radius:8px;display:flex;justify-content:space-between;align-items:center; }
 
-    /* Progresso */
-    .sp-prog-wrap {
-      margin-top: 3.2rem;
-      width: 52px; height: 2px;
-      border-radius: 2px;
-      background: rgba(255,255,255,0.05);
-      overflow: hidden;
-      animation: spUp .4s .52s ease both;
-    }
-    .sp-prog-bar {
-      height: 100%; width: 0%;
-      border-radius: 2px;
-      background: linear-gradient(90deg, #B8922A, #EDD060, #B8922A);
-      background-size: 200% 100%;
-      animation:
-        spLoad 1.05s .58s cubic-bezier(.4,0,.2,1) forwards,
-        spProgShimmer 1.4s .9s linear infinite;
-    }
-    @keyframes spLoad {
-      0%   { width: 0%;   }
-      60%  { width: 78%;  }
-      100% { width: 100%; }
-    }
-    @keyframes spProgShimmer {
-      from { background-position: 200% 0; }
-      to   { background-position: -200% 0; }
-    }
+/* ── Skeleton ── */
+.skeleton { position:relative;overflow:hidden;background:rgba(255,255,255,.04);border-radius:8px; }
+.skeleton::after { content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.07) 50%,transparent 100%);animation:shimmer 1.5s infinite;will-change:transform; }
 
-    /* Versão */
-    .sp-version {
-      position: absolute;
-      bottom: max(env(safe-area-inset-bottom, 0px), 22px);
-      font-family: -apple-system, sans-serif;
-      font-size: .6rem;
-      color: rgba(255,255,255,0.1);
-      letter-spacing: .1em;
-      animation: spUp .4s .75s ease both;
-    }
-  </style>
+/* ── Misc ── */
+.page-loader { display:flex;align-items:center;justify-content:center;height:38vh;opacity:.35;font-size:.78rem;color:var(--t4);animation:fadeIn 300ms ease both; }
+</style>
 </head>
 <body>
 
-  <!-- ── Splash Screen ────────────────────────────────────────────────────── -->
-  <div id="splash" aria-hidden="true">
-    <div class="sp-halo"></div>
-    <div class="sp-icon-wrap">
-      <div class="sp-icon">🪨</div>
+<div id="sApp">
+  <div id="hdrAndPages">
+    <div id="hdr">
+      <div class="hlogo" onclick="navTo('home')">🪨</div>
+      <div class="hnm">
+        Ceará Planejados
+        <span class="hsub">Vidraçaria · Marcenaria</span>
+      </div>
+      <div class="hdt" id="hdrData"></div>
     </div>
-    <div class="sp-name">Ceará Planejados</div>
-    <div class="sp-sub">Vidraçaria · Marcenaria</div>
-    <div class="sp-prog-wrap">
-      <div class="sp-prog-bar"></div>
+    <div id="pages">
+      <div id="pgWrap" class="pg"></div>
     </div>
-    <div class="sp-version">v8.0</div>
   </div>
+  <div id="nav"></div>
+</div>
 
-  <!-- ── Mount React ──────────────────────────────────────────────────────── -->
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
+<!-- Modal container -->
+<div id="modalContainer"></div>
 
-  <!-- ── SW + Splash control ──────────────────────────────────────────────── -->
-  <script>
-    // ── Service Worker ────────────────────────────────────────────────────────
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/service-worker.js', { scope: '/' })
-          .then(reg => {
-            reg.addEventListener('updatefound', () => {
-              const nw = reg.installing;
-              nw.addEventListener('statechange', () => {
-                if (nw.state === 'installed' && navigator.serviceWorker.controller)
-                  window.dispatchEvent(new CustomEvent('pwa-update-available'));
-              });
-            });
-          })
-          .catch(err => console.warn('[PWA] SW fail:', err));
-      });
+<script>
+// ════════════════════════════════════════════════════════════
+// DADOS / CONFIGURAÇÃO
+// ════════════════════════════════════════════════════════════
+
+const VIDROS = {
+  temp_trans: { nome:'Transparente 8mm (Temp.)', preco:420,  temperado:true  },
+  temp_fume:  { nome:'Fumê 8mm (Temp.)',         preco:455,  temperado:true  },
+  temp_serig: { nome:'Serigrafado 8mm (Temp.)',  preco:650,  temperado:true  },
+  temp_jat:   { nome:'Jateado 8mm (Temp.)',      preco:440,  temperado:true  },
+  temp_esp:   { nome:'Espelhado 8mm (Temp.)',    preco:620,  temperado:true  },
+  com_4:      { nome:'Incolor 4mm',              preco:220,  temperado:false },
+  com_6:      { nome:'Incolor 6mm',              preco:240,  temperado:false },
+  com_fume3:  { nome:'Fumê 3mm',                 preco:210,  temperado:false },
+  com_fume4:  { nome:'Fumê 4mm',                 preco:245,  temperado:false },
+  esp_3:      { nome:'Espelho 3mm',              preco:260,  temperado:false },
+  esp_4:      { nome:'Espelho 4mm',              preco:280,  temperado:false },
+};
+
+const ACESSORIOS_CONFIG = {
+  pivotante:  [{ id:'kit',      nome:'Kit Pivotante',       preco:150, obrig:true  },{ id:'puxador', nome:'Puxador',    preco:100, obrig:false },{ id:'fixador', nome:'Fixador',   preco:60,  obrig:false }],
+  correr:     [{ id:'kit',      nome:'Kit Porta de Correr', preco:null,obrig:true  },{ id:'fechadura',nome:'Fechadura VP',preco:150,obrig:true  },{ id:'puxador', nome:'Puxador',   preco:100, obrig:true  }],
+  janela:     [{ id:'kit',      nome:'Kit Janela',          preco:null,obrig:true  },{ id:'bate',    nome:'Bate-fecha VP',preco:50, obrig:true  }],
+  basculante: [{ id:'kit',      nome:'Kit Basculante',      preco:150, obrig:true  }],
+  box:        [{ id:'kit',      nome:'Kit Box',             preco:null,obrig:true  }],
+  espelho:    [{ id:'botoes',   nome:'Botões (≥60cm larg.)',preco:null,obrig:false },{ id:'colado',  nome:'Fixação Colada',preco:0,  obrig:false }],
+  comum:      [{ id:'recorte',  nome:'Recorte (+R$10/m²)',  preco:null,obrig:false }],
+  guarda:     [],
+};
+
+const VIDROS_POR_TIPO = {
+  pivotante:  ['temp_trans','temp_fume','temp_serig','temp_jat','temp_esp'],
+  correr:     ['temp_trans','temp_fume','temp_serig','temp_jat','temp_esp'],
+  janela:     ['temp_trans','temp_fume','com_4','com_6'],
+  box:        ['temp_trans','temp_fume','temp_serig','temp_jat'],
+  espelho:    ['esp_3','esp_4'],
+  basculante: ['com_4','com_6','temp_trans'],
+  guarda:     ['temp_trans','temp_fume','temp_serig'],
+  comum:      ['com_4','com_6','com_fume3','com_fume4','esp_3','esp_4'],
+};
+
+const DEFAULTS = {
+  pivotante:  { larg:90,  alt:210 },
+  correr:     { larg:150, alt:210 },
+  janela:     { larg:100, alt:120 },
+  box:        { larg:80,  alt:195 },
+  espelho:    { larg:60,  alt:80  },
+  basculante: { larg:60,  alt:40  },
+  guarda:     { larg:120, alt:110 },
+  comum:      { larg:60,  alt:60  },
+};
+
+const TIPOS = [
+  { id:'pivotante',  label:'Porta Pivotante', icon:'🚪' },
+  { id:'correr',     label:'Porta de Correr', icon:'🔲' },
+  { id:'janela',     label:'Janela',          icon:'🪟' },
+  { id:'box',        label:'Box de Banheiro', icon:'🛁' },
+  { id:'espelho',    label:'Espelho',         icon:'🪞' },
+  { id:'basculante', label:'Basculante',      icon:'⬆️' },
+  { id:'guarda',     label:'Guarda Corpo',    icon:'🏗️' },
+  { id:'comum',      label:'Vidro Comum',     icon:'🔷' },
+];
+
+const TIPO_LABEL = { pivotante:'Porta Pivotante',correr:'Porta de Correr',janela:'Janela',box:'Box de Banheiro',espelho:'Espelho',guarda:'Guarda Corpo',basculante:'Basculante',comum:'Vidro Comum' };
+const TIPO_ICON  = { pivotante:'🚪',correr:'🔲',janela:'🪟',box:'🛁',espelho:'🪞',guarda:'🏗️',basculante:'⬆️',comum:'🔷' };
+
+const FRETE_GRATIS_KM = 20;
+const FRETE_POR_KM_EXTRA = 3;
+const DESCONTO_AVISTA = 0.10;
+
+// ── Orçamento state ──
+let orcState = {
+  tipo: 'pivotante',
+  larg: 90, alt: 210,
+  vidroKey: 'temp_trans',
+  accs: {},
+  km: 0,
+  cliente: '', fone: '',
+  resultado: null,
+};
+
+// ════════════════════════════════════════════════════════════
+// INDEXEDDB
+// ════════════════════════════════════════════════════════════
+
+const DB_NAME = 'CearPlanejados', DB_VERSION = 1;
+let _dbPromise = null;
+
+function getDB() {
+  if (_dbPromise) return _dbPromise;
+  _dbPromise = new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('orcamentos')) {
+        const os = db.createObjectStore('orcamentos', { keyPath:'id', autoIncrement:true });
+        os.createIndex('por_data',    'criadoEm',    { unique:false });
+        os.createIndex('por_cliente', 'clienteNome', { unique:false });
+      }
+    };
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror   = e => reject(e.target.error);
+  });
+  return _dbPromise;
+}
+
+async function dbTx(store, mode, fn) {
+  const db = await getDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, mode);
+    const s  = tx.objectStore(store);
+    const req = fn(s);
+    if (req) { req.onsuccess = e => resolve(e.target.result); req.onerror = e => reject(e.target.error); }
+    else { tx.oncomplete = () => resolve(); tx.onerror = e => reject(e.target.error); }
+  });
+}
+
+async function salvarOrcamento(dados) {
+  return dbTx('orcamentos','readwrite', s => s.add({ ...dados, criadoEm: new Date().toISOString() }));
+}
+async function listarOrcamentos() {
+  const todos = await dbTx('orcamentos','readonly', s => s.getAll());
+  return todos.sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm));
+}
+async function removerOrcamento(id) {
+  return dbTx('orcamentos','readwrite', s => s.delete(id));
+}
+async function atualizarOrcamento(orc) {
+  return dbTx('orcamentos','readwrite', s => s.put({ ...orc, atualizadoEm: new Date().toISOString() }));
+}
+async function duplicarOrcamento(orc) {
+  const { id, criadoEm, atualizadoEm, ...resto } = orc;
+  return salvarOrcamento({ ...resto, clienteNome: orc.clienteNome ? orc.clienteNome + ' (cópia)' : '' });
+}
+
+// ════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════
+
+function formatBRL(v) {
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits:2 });
+}
+
+function calcularOrcamento({ tipo, larg, alt, vidro, accs, km }) {
+  if (!larg || !alt || isNaN(larg) || isNaN(alt)) return null;
+  const linhas = []; let total = 0, descontoBase = 0;
+  const area = (larg/100)*(alt/100);
+  const vidroObj = VIDROS[vidro];
+  if (vidroObj) {
+    const val = area * vidroObj.preco;
+    linhas.push({ nome:vidroObj.nome, valor:val });
+    total += val;
+    if (vidroObj.temperado) descontoBase += val * DESCONTO_AVISTA;
+  }
+  (ACESSORIOS_CONFIG[tipo] || []).forEach(a => {
+    const ativo = accs[a.id] ?? a.obrig;
+    if (!ativo) return;
+    let val = 0;
+    if (a.preco !== null && a.preco !== undefined) { val = a.preco; }
+    else {
+      if (tipo === 'correr')  val = area * 100;
+      if (tipo === 'janela')  val = (larg/100) * 100;
+      if (tipo === 'box')     val = area * 120;
+      if (tipo === 'espelho' && a.id === 'botoes') val = larg >= 60 ? 4*15 : 0;
+      if (tipo === 'comum'   && a.id === 'recorte') val = area * 10;
     }
+    linhas.push({ nome:a.nome, valor:val });
+    total += val;
+  });
+  const kmNum = parseFloat(km) || 0;
+  let frete = 0;
+  if (kmNum > FRETE_GRATIS_KM) frete = (kmNum - FRETE_GRATIS_KM) * FRETE_POR_KM_EXTRA;
+  linhas.push({ nome:`Frete (${kmNum} km)`, valor:frete });
+  total += frete;
+  return { linhas, total, totalAvista: total - descontoBase };
+}
 
-    // ── Splash control — à prova de falha ────────────────────────────────────
-    (function () {
-      const splash = document.getElementById('splash');
-      const root   = document.getElementById('root');
-      const MIN_MS = 1400;   // tempo mínimo de exibição (ms) — deixa animação terminar
-      const MAX_MS = 5000;   // tempo máximo absoluto — nunca trava mais que isso
-      const t0     = Date.now();
-      let   done   = false;
+function gerarTextoWpp({ cliente, tipo, larg, alt, vidro, resultado }) {
+  if (!resultado) return '';
+  const vidroObj = VIDROS[vidro];
+  const dataStr = new Date().toLocaleDateString('pt-BR');
+  let txt = `*Orçamento — Ceará Planejados*\n📅 ${dataStr}\n`;
+  if (cliente) txt += `👤 Cliente: ${cliente}\n`;
+  txt += `\n📦 Produto: *${TIPO_LABEL[tipo]||tipo}*\n📐 Medidas: ${larg} x ${alt} cm\n`;
+  if (vidroObj) txt += `🔷 Vidro: ${vidroObj.nome}\n`;
+  txt += `\n*Composição:*\n`;
+  resultado.linhas.forEach(l => txt += `• ${l.nome}: ${formatBRL(l.valor)}\n`);
+  txt += `\n💰 *Total: ${formatBRL(resultado.total)}*\n💚 À vista (10% off): *${formatBRL(resultado.totalAvista)}*\n\n_Orçamento gerado pelo app Ceará Planejados_`;
+  return txt;
+}
 
-      function removeSplash() {
-        // Garante execução única mesmo se chamado múltiplas vezes
-        if (done) return;
-        done = true;
+function formatData(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+}
 
-        const elapsed = Date.now() - t0;
-        const delay   = Math.max(0, MIN_MS - elapsed);
+function corTipo(tipo) {
+  const map = {
+    pivotante: { bg:'rgba(212,175,55,0.1)',  brd:'rgba(212,175,55,0.25)' },
+    correr:    { bg:'rgba(80,160,220,0.1)',  brd:'rgba(80,160,220,0.25)' },
+    janela:    { bg:'rgba(100,200,140,0.1)', brd:'rgba(100,200,140,0.25)' },
+    box:       { bg:'rgba(160,120,220,0.1)', brd:'rgba(160,120,220,0.25)' },
+    espelho:   { bg:'rgba(220,180,80,0.1)',  brd:'rgba(220,180,80,0.25)' },
+    guarda:    { bg:'rgba(220,100,100,0.1)', brd:'rgba(220,100,100,0.25)' },
+    basculante:{ bg:'rgba(100,200,255,0.1)', brd:'rgba(100,200,255,0.25)' },
+    comum:     { bg:'rgba(180,180,180,0.1)', brd:'rgba(180,180,180,0.25)' },
+  };
+  return map[tipo] || { bg:'rgba(201,168,76,0.1)',brd:'rgba(201,168,76,0.2)' };
+}
 
-        setTimeout(function () {
-          // Inicia fade-out
-          splash.style.transition = 'opacity .45s ease, transform .45s ease';
-          splash.style.opacity    = '0';
-          splash.style.transform  = 'scale(1.04)';
-          splash.style.pointerEvents = 'none';
+// ════════════════════════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════════════════════════
 
-          // Remove do DOM após a transição — com fallback duplo
-          var t1 = setTimeout(killSplash, 520);
-          splash.addEventListener('transitionend', function onEnd() {
-            splash.removeEventListener('transitionend', onEnd);
-            clearTimeout(t1);
-            killSplash();
-          }, { once: true });
-        }, delay);
-      }
+const NAV_ITEMS = [
+  { id:'home',       label:'Início',    icon:'🏠', cta:false },
+  { id:'orc',        label:'Orçamento', icon:'🧮', cta:true  },
+  { id:'financeiro', label:'Preços',    icon:'💎', cta:false },
+  { id:'historico',  label:'Histórico', icon:'📂', cta:false },
+  { id:'clientes',   label:'Clientes',  icon:'👥', cta:false },
+  { id:'config',     label:'Config.',   icon:'ℹ️', cta:false },
+];
 
-      function killSplash() {
-        splash.style.display = 'none';
-        // Para animações infinitas internas (halo, shimmer) — libera GPU
-        splash.getAnimations && splash.getAnimations().forEach(function(a){ a.cancel(); });
-      }
+let paginaAtiva = 'home';
 
-      // Dispara quando React montar o primeiro filho no #root
-      var obs = new MutationObserver(function () {
-        if (root.children.length > 0) {
-          obs.disconnect();
-          removeSplash();
-        }
-      });
-      obs.observe(root, { childList: true });
+function buildNav() {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = NAV_ITEMS.map(it => `
+    <button class="ni${it.cta?' ni-cta':''}${paginaAtiva===it.id?' on':''}" onclick="navTo('${it.id}')" aria-label="${it.label}">
+      <div class="ni-ic-wrap"><span class="ni-i">${it.icon}</span></div>
+      <span class="ni-l">${it.label}</span>
+    </button>
+  `).join('');
+}
 
-      // Failsafe absoluto: nunca fica preso mais que MAX_MS
-      setTimeout(function () {
-        obs.disconnect();
-        removeSplash();
-      }, MAX_MS);
-    })();
-  </script>
+function navTo(pg) {
+  if (pg === paginaAtiva) return;
+  paginaAtiva = pg;
+  buildNav();
+  renderPage();
+}
 
+// ════════════════════════════════════════════════════════════
+// RENDER ROUTER
+// ════════════════════════════════════════════════════════════
+
+function renderPage() {
+  const wrap = document.getElementById('pgWrap');
+  wrap.className = 'pg';
+  // Force reflow para restart animation
+  void wrap.offsetWidth;
+  switch(paginaAtiva) {
+    case 'home':       renderHome(wrap); break;
+    case 'orc':        renderOrc(wrap); break;
+    case 'financeiro': renderFinanceiro(wrap); break;
+    case 'historico':  renderHistorico(wrap); break;
+    case 'clientes':   renderClientes(wrap); break;
+    case 'config':     renderConfig(wrap); break;
+  }
+  // Scroll to top
+  document.getElementById('pages').scrollTop = 0;
+}
+
+// ════════════════════════════════════════════════════════════
+// HOME / DASHBOARD
+// ════════════════════════════════════════════════════════════
+
+const ATALHOS = [
+  { tipo:'pivotante', icone:'🚪', nome:'Porta Pivotante', sub:'Temperado 8mm',       cor:'rgba(212,175,55,0.12)', borda:'rgba(212,175,55,0.25)' },
+  { tipo:'correr',    icone:'🔲', nome:'Porta de Correr', sub:'2 ou 4 folhas',       cor:'rgba(80,160,220,0.1)',  borda:'rgba(80,160,220,0.2)'  },
+  { tipo:'janela',    icone:'🪟', nome:'Janela',          sub:'Correr / Basculante',  cor:'rgba(100,200,140,0.1)',borda:'rgba(100,200,140,0.2)' },
+  { tipo:'box',       icone:'🛁', nome:'Box de Banheiro', sub:'Pivotante / Correr',  cor:'rgba(160,120,220,0.1)',borda:'rgba(160,120,220,0.2)' },
+  { tipo:'espelho',   icone:'🪞', nome:'Espelho',         sub:'Com / sem bisotê',     cor:'rgba(220,180,80,0.1)', borda:'rgba(220,180,80,0.2)'  },
+  { tipo:'guarda',    icone:'🏗️', nome:'Guarda Corpo',    sub:'Módulos de 120cm',    cor:'rgba(220,100,100,0.1)',borda:'rgba(220,100,100,0.2)' },
+];
+
+const INFOS = [
+  { ic:'⏰', lbl:'Horário',    val:'Seg–Sex 8h–18h · Sáb 8h–13h',          bg:'rgba(212,175,55,0.1)', border:'rgba(212,175,55,0.2)' },
+  { ic:'🚛', lbl:'Frete',     val:'Grátis até 20 km · Acima sob consulta',  bg:'rgba(58,158,106,0.1)', border:'rgba(58,158,106,0.2)' },
+  { ic:'💳', lbl:'Pagamento', val:'10% desconto à vista · 6x sem juros',    bg:'rgba(80,160,220,0.1)', border:'rgba(80,160,220,0.2)' },
+  { ic:'🔧', lbl:'Instalação',val:'Profissional capacitado · Garantia inclusa',bg:'rgba(160,120,220,0.1)',border:'rgba(160,120,220,0.2)' },
+];
+
+function renderHome(wrap) {
+  wrap.innerHTML = `
+    <div id="pgHome">
+      <div class="home-banner" style="animation:slideUp 200ms ease both">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px">
+          <div>
+            <div class="home-banner-nm">Ceará Planejados</div>
+            <div class="home-banner-sub">Vidraçaria · Marcenaria · Serralheria</div>
+          </div>
+          <div style="background:rgba(58,158,106,0.15);border:1px solid rgba(58,158,106,0.3);border-radius:20px;padding:4px 10px;font-size:.62rem;font-weight:700;color:#3A9E6A;letter-spacing:.04em;display:flex;align-items:center;gap:5px">
+            <span style="width:6px;height:6px;border-radius:50%;background:#3A9E6A;box-shadow:0 0 6px rgba(58,158,106,0.6);display:inline-block;animation:pulse 2s infinite"></span>Aberto
+          </div>
+        </div>
+        <div class="home-stats">
+          <div class="stat-card"><div class="stat-val">8mm</div><div class="stat-lbl">Temperado</div></div>
+          <div class="stat-card"><div class="stat-val">10%</div><div class="stat-lbl">À vista</div></div>
+          <div class="stat-card"><div class="stat-val">20km</div><div class="stat-lbl">Frete grátis</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-ttl">Calcular orçamento</div>
+        <div class="qa-grid">
+          ${ATALHOS.map((a,i) => `
+            <div class="qa-btn" style="animation-delay:${80+i*28}ms" onclick="goOrc('${a.tipo}')">
+              <span class="qa-ic" style="background:${a.cor};border:1px solid ${a.borda}">${a.icone}</span>
+              <div><div class="qa-nm">${a.nome}</div><div class="qa-sm">${a.sub}</div></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-ttl">Informações</div>
+        <div class="card" style="padding:4px 16px">
+          ${INFOS.map(info => `
+            <div class="info-item">
+              <span class="info-ic" style="background:${info.bg};border:1px solid ${info.border}">${info.ic}</span>
+              <div class="info-body"><div class="info-lbl">${info.lbl}</div><div class="info-val">${info.val}</div></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div style="height:88px"></div>
+    </div>
+  `;
+}
+
+function goOrc(tipo) {
+  orcState.tipo = tipo;
+  orcState.larg = DEFAULTS[tipo]?.larg ?? 80;
+  orcState.alt  = DEFAULTS[tipo]?.alt ?? 120;
+  orcState.vidroKey = (VIDROS_POR_TIPO[tipo]||[])[0]||'';
+  orcState.accs = {};
+  orcState.resultado = null;
+  navTo('orc');
+}
+
+// ════════════════════════════════════════════════════════════
+// CAD SVG
+// ════════════════════════════════════════════════════════════
+
+function renderCAD(svgEl, { tipo, larg, alt }) {
+  if (!svgEl || !larg || !alt || isNaN(larg) || isNaN(alt)) return;
+  while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
+  const W=320,H=200,MARGIN=30,maxPW=W-MARGIN*2-40,maxPH=H-MARGIN*2-30;
+  const scale=Math.min(maxPW/larg,maxPH/alt), pw=larg*scale, ph=alt*scale;
+  const ox=(W-pw)/2-10, oy=(H-ph)/2-5;
+  const C = { glass:'rgba(100,200,255,0.12)',frame:'rgba(100,200,255,0.55)',dim:'rgba(100,180,255,0.4)',dimArrow:'rgba(100,200,255,0.7)',label:'rgba(150,220,255,0.9)' };
+  const ns = 'http://www.w3.org/2000/svg';
+  function el(tag,attrs) { const e=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; }
+  function rect(x,y,w,h,attrs) { return el('rect',{x,y,width:w,height:h,...attrs}); }
+  function line(x1,y1,x2,y2,attrs) { return el('line',{x1,y1,x2,y2,...attrs}); }
+  function txt(x,y,text,attrs) { const e=el('text',{x,y,...attrs}); e.textContent=text; return e; }
+  function path(d,attrs) { return el('path',{d,...attrs}); }
+  const defs=el('defs',{});
+  const mkArr=(id,d)=>{ const m=el('marker',{id,markerWidth:6,markerHeight:6,refX:3,refY:3,orient:'auto'}); m.appendChild(el('path',{d,fill:C.dimArrow})); return m; };
+  defs.appendChild(mkArr('arr','M0,1 L6,3 L0,5 Z')); defs.appendChild(mkArr('arrR','M6,1 L0,3 L6,5 Z'));
+  const gId='gG'; const lg=el('linearGradient',{id:gId,x1:'0',y1:'0',x2:'1',y2:'1'});
+  lg.appendChild(el('stop',{offset:'0%','stop-color':'rgba(255,255,255,0.12)'}));
+  lg.appendChild(el('stop',{offset:'50%','stop-color':'rgba(255,255,255,0.03)'}));
+  lg.appendChild(el('stop',{offset:'100%','stop-color':'rgba(100,200,255,0.06)'}));
+  defs.appendChild(lg); svgEl.appendChild(defs);
+  svgEl.appendChild(rect(ox,oy,pw,ph,{fill:C.glass,rx:'3'}));
+  svgEl.appendChild(rect(ox,oy,pw,ph,{fill:`url(#${gId})`,rx:'3'}));
+  svgEl.appendChild(rect(ox,oy,pw,ph,{fill:'none',stroke:C.frame,'stroke-width':'2',rx:'3'}));
+  if (tipo==='pivotante') {
+    const pvX=ox+pw*0.12;
+    svgEl.appendChild(line(pvX,oy+4,pvX,oy+ph-4,{stroke:'rgba(255,200,80,0.5)','stroke-width':'2'}));
+    svgEl.appendChild(line(pvX,oy+ph*0.5,ox+pw-8,oy+8,{stroke:'rgba(100,200,255,0.25)','stroke-width':'1','stroke-dasharray':'4,3'}));
+    svgEl.appendChild(el('circle',{cx:pvX,cy:oy+ph*0.5,r:'4',fill:'none',stroke:'rgba(255,200,80,0.6)','stroke-width':'1.5'}));
+  } else if (tipo==='correr') {
+    const folhas=larg>200?4:2;
+    for(let f=1;f<folhas;f++){const fx=ox+pw*(f/folhas);svgEl.appendChild(line(fx,oy+2,fx,oy+ph-2,{stroke:'rgba(100,200,255,0.5)','stroke-width':'1.5','stroke-dasharray':'2,2'}));}
+    svgEl.appendChild(path(`M${ox+6},${oy+ph/2} L${ox+14},${oy+ph/2-4} L${ox+14},${oy+ph/2+4} Z`,{fill:'rgba(100,200,255,0.4)'}));
+  } else if (tipo==='janela') {
+    svgEl.appendChild(line(ox+2,oy+ph/2,ox+pw-2,oy+ph/2,{stroke:'rgba(100,200,255,0.45)','stroke-width':'1.2','stroke-dasharray':'2,2'}));
+    const fj=larg<=120?2:4; for(let f=1;f<fj;f++){const fjx=ox+pw*(f/fj);svgEl.appendChild(line(fjx,oy+2,fjx,oy+ph-2,{stroke:'rgba(100,200,255,0.45)','stroke-width':'1','stroke-dasharray':'2,2'}));}
+  } else if (tipo==='espelho') {
+    svgEl.appendChild(line(ox+pw*0.3,oy+4,ox+pw*0.15,oy+ph-4,{stroke:'rgba(255,255,255,0.14)','stroke-width':'2','stroke-linecap':'round'}));
+  } else if (tipo==='guarda') {
+    const mods=Math.ceil((larg/100)/1.2);
+    for(let m=0;m<=mods;m++){let gx=Math.min(ox+(pw/mods)*m,ox+pw-2);svgEl.appendChild(line(gx,oy+2,gx,oy+ph-2,{stroke:'rgba(100,200,255,0.5)','stroke-width':'2'}));}
+    svgEl.appendChild(line(ox+2,oy+8,ox+pw-2,oy+8,{stroke:'rgba(100,200,255,0.55)','stroke-width':'2'}));
+  } else {
+    svgEl.appendChild(line(ox+2,oy+2,ox+pw-2,oy+ph-2,{stroke:'rgba(100,200,255,0.12)','stroke-width':'1'}));
+    svgEl.appendChild(line(ox+pw-2,oy+2,ox+2,oy+ph-2,{stroke:'rgba(100,200,255,0.12)','stroke-width':'1'}));
+  }
+  const cm=8,cmS='rgba(100,200,255,0.4)',cmW='1.2';
+  [[ox,oy,1,1],[ox+pw,oy,-1,1],[ox,oy+ph,1,-1],[ox+pw,oy+ph,-1,-1]].forEach(([x,y,dx,dy])=>{
+    svgEl.appendChild(line(x,y,x+cm*dx,y,{stroke:cmS,'stroke-width':cmW}));
+    svgEl.appendChild(line(x,y,x,y+cm*dy,{stroke:cmS,'stroke-width':cmW}));
+  });
+  const DIMGAP=10,DIMOFF=6,dy=oy+ph+DIMGAP+DIMOFF;
+  svgEl.appendChild(line(ox,oy+ph+DIMOFF,ox,dy+2,{stroke:C.dim,'stroke-width':'0.8'}));
+  svgEl.appendChild(line(ox+pw,oy+ph+DIMOFF,ox+pw,dy+2,{stroke:C.dim,'stroke-width':'0.8'}));
+  svgEl.appendChild(line(ox,dy,ox+pw,dy,{stroke:C.dimArrow,'stroke-width':'1.2','marker-start':'url(#arrR)','marker-end':'url(#arr)'}));
+  svgEl.appendChild(txt(ox+pw/2,dy+8,`${larg} cm`,{'text-anchor':'middle','font-size':'9','font-family':'Outfit,sans-serif','font-weight':'700',fill:C.label}));
+  const dx2=ox+pw+DIMGAP+DIMOFF;
+  svgEl.appendChild(line(ox+pw+DIMOFF,oy,dx2+2,oy,{stroke:C.dim,'stroke-width':'0.8'}));
+  svgEl.appendChild(line(ox+pw+DIMOFF,oy+ph,dx2+2,oy+ph,{stroke:C.dim,'stroke-width':'0.8'}));
+  svgEl.appendChild(line(dx2,oy,dx2,oy+ph,{stroke:C.dimArrow,'stroke-width':'1.2','marker-start':'url(#arrR)','marker-end':'url(#arr)'}));
+  svgEl.appendChild(txt(dx2+9,oy+ph/2,`${alt} cm`,{'text-anchor':'middle','font-size':'9','font-family':'Outfit,sans-serif','font-weight':'700',fill:C.label,transform:`rotate(-90,${dx2+9},${oy+ph/2})`}));
+  if (pw>70&&ph>40) { const area=(larg/100)*(alt/100); svgEl.appendChild(txt(ox+pw/2,oy+ph/2+3,`${area.toFixed(2)} m²`,{'text-anchor':'middle','font-size':'8','font-family':'Outfit,sans-serif',fill:'rgba(150,220,255,0.6)'})); }
+}
+
+// ════════════════════════════════════════════════════════════
+// ORÇAMENTO
+// ════════════════════════════════════════════════════════════
+
+function renderOrc(wrap) {
+  const s = orcState;
+  const accConfig = ACESSORIOS_CONFIG[s.tipo] || [];
+  const vidrosDispo = (VIDROS_POR_TIPO[s.tipo]||[]).map(k=>({key:k,...VIDROS[k]}));
+  const res = s.resultado;
+
+  wrap.innerHTML = `
+    <div id="pgOrcamento">
+      <div class="orc-tipos" id="orcTipos">
+        ${TIPOS.map(t=>`
+          <button class="orc-tipo-btn${s.tipo===t.id?' active':''}" onclick="orcTrocaTipo('${t.id}')">
+            <span class="orc-tipo-ic">${t.icon}</span>
+            <span class="orc-tipo-lbl">${t.label}</span>
+          </button>
+        `).join('')}
+      </div>
+
+      <svg id="orcCAD" class="orc-cad" viewBox="0 0 320 200"></svg>
+
+      <div class="campo-row">
+        <div class="field"><label>Largura (cm)</label><input id="orcLarg" type="number" inputmode="numeric" value="${s.larg}" placeholder="cm" oninput="orcUpdate()"></div>
+        <div class="field"><label>Altura (cm)</label><input id="orcAlt" type="number" inputmode="numeric" value="${s.alt}" placeholder="cm" oninput="orcUpdate()"></div>
+      </div>
+
+      <div class="field">
+        <label>Tipo de vidro</label>
+        <select id="orcVidro" onchange="orcUpdate()">
+          ${vidrosDispo.map(v=>`<option value="${v.key}"${s.vidroKey===v.key?' selected':''}>${v.nome} — ${formatBRL(v.preco)}/m²</option>`).join('')}
+        </select>
+      </div>
+
+      ${accConfig.length>0?`
+        <div class="section" style="margin-bottom:16px">
+          <div class="section-ttl">Acessórios</div>
+          <div class="orc-accs" id="orcAccs">
+            ${accConfig.map(a=>{
+              const ativo = s.accs[a.id]??a.obrig;
+              return `<button class="orc-acc-btn${ativo?' on':''}${a.obrig?' obrig':''}" onclick="orcToggleAcc('${a.id}',${a.obrig})">${ativo?'✓':'+'} ${a.nome}${a.preco?` (${formatBRL(a.preco)})`:a.desc?` (${a.desc})`:''}</button>`;
+            }).join('')}
+          </div>
+        </div>
+      `:''}
+
+      <div class="field">
+        <label>Distância (km) — frete grátis até 20 km</label>
+        <input id="orcKm" type="number" inputmode="numeric" value="${s.km}" placeholder="0" oninput="orcUpdate()">
+      </div>
+
+      <div class="campo-row">
+        <div class="field"><label>Cliente (opcional)</label><input id="orcCliente" type="text" value="${s.cliente}" placeholder="Nome" oninput="orcUpdate()"></div>
+        <div class="field"><label>Telefone</label><input id="orcFone" type="tel" value="${s.fone}" placeholder="(85) 9..." oninput="orcUpdate()"></div>
+      </div>
+
+      <div id="orcResultBox"></div>
+      <div id="orcSavedMsg"></div>
+      <div id="orcAcoes"></div>
+      <div style="height:88px"></div>
+    </div>
+  `;
+
+  renderCAD(document.getElementById('orcCAD'), { tipo:s.tipo, larg:s.larg, alt:s.alt });
+  orcCalcAndRender();
+}
+
+function orcUpdate() {
+  const larg = parseFloat(document.getElementById('orcLarg')?.value)||0;
+  const alt  = parseFloat(document.getElementById('orcAlt')?.value)||0;
+  const vidro= document.getElementById('orcVidro')?.value||orcState.vidroKey;
+  const km   = parseFloat(document.getElementById('orcKm')?.value)||0;
+  const cliente = document.getElementById('orcCliente')?.value||'';
+  const fone    = document.getElementById('orcFone')?.value||'';
+  orcState.larg = larg; orcState.alt = alt; orcState.vidroKey = vidro;
+  orcState.km = km; orcState.cliente = cliente; orcState.fone = fone;
+  renderCAD(document.getElementById('orcCAD'), { tipo:orcState.tipo, larg, alt });
+  orcCalcAndRender();
+}
+
+function orcCalcAndRender() {
+  const s = orcState;
+  const res = calcularOrcamento({ tipo:s.tipo, larg:s.larg, alt:s.alt, vidro:s.vidroKey, accs:s.accs, km:s.km });
+  orcState.resultado = res;
+  const rb = document.getElementById('orcResultBox');
+  const ra = document.getElementById('orcAcoes');
+  if (!rb) return;
+  if (res) {
+    rb.innerHTML = `
+      <div class="orc-result">
+        <div class="orc-total">${formatBRL(res.total)}</div>
+        ${res.totalAvista < res.total ? `<div class="orc-avista">💚 À vista: ${formatBRL(res.totalAvista)} (10% off)</div>` : ''}
+        <div class="orc-linhas">
+          ${res.linhas.map(l=>`<div class="orc-linha"><span>${l.nome}</span><span>${formatBRL(l.valor)}</span></div>`).join('')}
+        </div>
+      </div>
+    `;
+    ra.innerHTML = `
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <button class="btn btn-ghost btn-full" onclick="orcSalvar()">💾 Salvar</button>
+        <button class="btn btn-grn btn-full" onclick="orcWpp()">📲 WhatsApp</button>
+      </div>
+    `;
+  } else {
+    rb.innerHTML = '';
+    ra.innerHTML = '';
+  }
+}
+
+function orcTrocaTipo(tipo) {
+  orcState.tipo = tipo;
+  orcState.larg = DEFAULTS[tipo]?.larg ?? 80;
+  orcState.alt  = DEFAULTS[tipo]?.alt ?? 120;
+  orcState.vidroKey = (VIDROS_POR_TIPO[tipo]||[])[0]||'';
+  orcState.accs = {};
+  orcState.resultado = null;
+  renderOrc(document.getElementById('pgWrap'));
+}
+
+function orcToggleAcc(id, obrig) {
+  if (obrig) return;
+  orcState.accs[id] = !(orcState.accs[id] ?? false);
+  orcCalcAndRender();
+  // Update acc buttons
+  const accConfig = ACESSORIOS_CONFIG[orcState.tipo] || [];
+  const container = document.getElementById('orcAccs');
+  if (container) {
+    container.innerHTML = accConfig.map(a=>{
+      const ativo = orcState.accs[a.id]??a.obrig;
+      return `<button class="orc-acc-btn${ativo?' on':''}${a.obrig?' obrig':''}" onclick="orcToggleAcc('${a.id}',${a.obrig})">${ativo?'✓':'+'} ${a.nome}${a.preco?` (${formatBRL(a.preco)})`:a.desc?` (${a.desc})`:''}</button>`;
+    }).join('');
+  }
+}
+
+async function orcSalvar() {
+  if (!orcState.resultado) return;
+  showModalConfirm(
+    '💾 Salvar orçamento?',
+    `Salvar orçamento de ${formatBRL(orcState.resultado.total)} no histórico${orcState.cliente ? ` para ${orcState.cliente}` : ''}?`,
+    'Salvar',
+    async () => {
+      try {
+        await salvarOrcamento({
+          tipo: orcState.tipo,
+          larg: orcState.larg,
+          alt:  orcState.alt,
+          vidro: orcState.vidroKey,
+          accs: orcState.accs,
+          km: orcState.km,
+          clienteNome: orcState.cliente.trim(),
+          clienteFone: orcState.fone.trim(),
+          resultado: orcState.resultado,
+        });
+        closeModal();
+        const sm = document.getElementById('orcSavedMsg');
+        if (sm) { sm.innerHTML = '<div class="orc-saved">✓ Orçamento salvo no histórico!</div>'; setTimeout(()=>sm.innerHTML='',3000); }
+      } catch(e) { alert('Erro ao salvar: '+e.message); }
+    }
+  );
+}
+
+function orcWpp() {
+  if (!orcState.resultado) return;
+  const txt = gerarTextoWpp({ cliente:orcState.cliente, tipo:orcState.tipo, larg:orcState.larg, alt:orcState.alt, vidro:orcState.vidroKey, resultado:orcState.resultado });
+  showModalWpp(txt, () => {
+    const num = orcState.fone.replace(/\D/g,'');
+    const base = num ? `https://wa.me/55${num}` : 'https://wa.me/';
+    window.open(`${base}?text=${encodeURIComponent(txt)}`, '_blank');
+    closeModal();
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+// FINANCEIRO / PREÇOS
+// ════════════════════════════════════════════════════════════
+
+const SECOES_PRECOS = [
+  { titulo:'🔥 Vidros Temperados — 8mm', sub:'Alta resistência · 10% desconto à vista', linhas:[['Transparente','R$ 420,00'],['Fumê','R$ 455,00'],['Serigrafado','R$ 650,00'],['Jateado','R$ 440,00'],['Espelhado','R$ 620,00']] },
+  { titulo:'🔲 Vidros Comuns', sub:'Uso residencial · Recorte +R$10/m²', linhas:[['Incolor 4mm','R$ 220,00'],['Incolor 6mm','R$ 240,00'],['Fumê 3mm','R$ 210,00'],['Fumê 4mm','R$ 245,00'],['Espelho 3mm','R$ 260,00'],['Espelho 4mm','R$ 280,00']] },
+  { titulo:'🔧 Kits e Ferragens', sub:'Inclusos conforme o produto selecionado', linhas:[['Kit pivotante comum','R$ 150,00'],['Kit pivotante jumbo','R$ 350,00'],['Kit porta de correr','R$ 100/m²'],['Kit janela 2 folhas','R$ 100/m'],['Kit janela 4 folhas','R$ 110/m'],['Kit basculante','R$ 150,00']] },
+  { titulo:'🪝 Acessórios Avulsos', sub:'Adicionados automaticamente por produto', linhas:[['Fechadura VP','R$ 150,00'],['Fechadura VV','R$ 180,00'],['Puxador','R$ 100,00'],['Fixador','R$ 60,00'],['Bate-fecha VP','R$ 50,00'],['Bate-fecha VV','R$ 80,00'],['Cantoneira alumínio','R$ 10/m'],['PU (poliuretano)','R$ 70/m']] },
+];
+
+function renderFinanceiro(wrap) {
+  wrap.innerHTML = `
+    <div>
+      <div class="hero"><div class="hero-ttl">💎 Tabela de Preços</div><div class="hero-sub">Valores por m² — Vidraçaria Ceará Planejados</div></div>
+      <div class="section">
+        ${SECOES_PRECOS.map(s=>`
+          <div class="price-section">
+            <div class="price-section-header"><h3>${s.titulo}</h3><p>${s.sub}</p></div>
+            <div class="card" style="padding:4px 12px">
+              <table class="tbl"><tbody>
+                <tr><th>Tipo</th><th style="text-align:right">Valor</th></tr>
+                ${s.linhas.map(([nome,val])=>`<tr><td>${nome}</td><td>${val}</td></tr>`).join('')}
+              </tbody></table>
+            </div>
+          </div>
+        `).join('')}
+        <div class="card" style="background:linear-gradient(135deg,rgba(58,158,106,.08),rgba(201,168,76,.05));border-color:rgba(58,158,106,.2)">
+          <div style="font-size:.72rem;font-weight:700;color:var(--grn);margin-bottom:10px">💚 Condições de Pagamento</div>
+          <div style="font-size:.74rem;color:var(--t3);line-height:1.8">
+            • <b style="color:var(--t2)">Desconto à vista:</b> 10% nos vidros temperados<br>
+            • <b style="color:var(--t2)">Parcelamento:</b> até 6x sem juros<br>
+            • <b style="color:var(--t2)">Cartão:</b> pode acrescentar 10% sobre total<br>
+            • <b style="color:var(--t2)">Padrão:</b> 50% entrada + 50% na entrega
+          </div>
+        </div>
+      </div>
+      <div style="height:80px"></div>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════════════════
+// HISTÓRICO
+// ════════════════════════════════════════════════════════════
+
+let histState = { filtro:'todos', busca:'', dataInicio:'', dataFim:'', orcamentos:[], expandido:null };
+
+function renderHistorico(wrap) {
+  wrap.style.padding = '0';
+  wrap.innerHTML = `
+    <div class="hist-wrap" id="histWrap">
+      <div class="hist-head">
+        <div class="hist-titulo">📂 Histórico</div>
+        <div class="hist-filtros" id="histFiltros">
+          ${[['todos','📋 Todos'],['cliente','👤 Cliente'],['telefone','📱 Telefone'],['data','📅 Data']].map(([id,lbl])=>`
+            <button class="hist-chip${histState.filtro===id?' on':''}" onclick="histSetFiltro('${id}')">${lbl}</button>
+          `).join('')}
+        </div>
+        <div id="histBuscaWrap">
+          ${histState.filtro!=='data'?`
+            <div class="hist-busca">
+              <span class="hist-busca-ic">🔍</span>
+              <input id="histBuscaInput" value="${histState.busca}" placeholder="${histPlaceholder()}" oninput="histSetBusca(this.value)" autocomplete="off">
+            </div>
+          `:`
+            <div class="hist-date-row">
+              <div class="hist-date-group"><div class="hist-date-lbl">De</div><input type="date" id="histDataIni" value="${histState.dataInicio}" onchange="histSetDatas(this.value,null)"></div>
+              <div class="hist-date-group"><div class="hist-date-lbl">Até</div><input type="date" id="histDataFim" value="${histState.dataFim}" onchange="histSetDatas(null,this.value)"></div>
+            </div>
+          `}
+        </div>
+        <div class="hist-resumo" id="histResumo">Carregando…</div>
+      </div>
+      <div class="hist-list" id="histList"><div class="hist-empty"><div class="hist-empty-ic">⏳</div>Carregando…</div></div>
+      <div id="histToast"></div>
+    </div>
+  `;
+  histCarregar();
+}
+
+function histPlaceholder() {
+  return { todos:'Buscar por cliente, telefone ou tipo…', cliente:'Digite o nome do cliente…', telefone:'Digite o telefone…', data:'' }[histState.filtro]||'Buscar…';
+}
+
+async function histCarregar() {
+  try {
+    histState.orcamentos = await listarOrcamentos();
+    histRenderLista();
+  } catch(e) {
+    const l = document.getElementById('histList');
+    if (l) l.innerHTML = '<div class="hist-empty"><div class="hist-empty-ic">❌</div>Erro ao carregar</div>';
+  }
+}
+
+function histFiltrar() {
+  let lista = [...histState.orcamentos];
+  const t = histState.busca.trim().toLowerCase();
+  if (histState.filtro==='cliente' && t) {
+    lista = lista.filter(o => (o.clienteNome||'').toLowerCase().includes(t));
+  } else if (histState.filtro==='telefone' && t) {
+    const d = histState.busca.replace(/\D/g,'');
+    lista = lista.filter(o => (o.clienteFone||'').replace(/\D/g,'').includes(d)||(o.clienteFone||'').toLowerCase().includes(t));
+  } else if (histState.filtro==='data') {
+    if (histState.dataInicio) lista = lista.filter(o => o.criadoEm >= histState.dataInicio);
+    if (histState.dataFim)    lista = lista.filter(o => o.criadoEm <= histState.dataFim+'T23:59:59');
+  } else if (t) {
+    lista = lista.filter(o => (o.clienteNome||'').toLowerCase().includes(t)||(o.clienteFone||'').toLowerCase().includes(t)||((TIPO_LABEL[o.tipo]||'').toLowerCase().includes(t)));
+  }
+  return lista;
+}
+
+function histRenderLista() {
+  const lista = histFiltrar();
+  const resumo = document.getElementById('histResumo');
+  const listEl = document.getElementById('histList');
+  if (!listEl) return;
+  if (resumo) resumo.textContent = `${lista.length} orçamento${lista.length!==1?'s':''}${histState.orcamentos.length!==lista.length?` de ${histState.orcamentos.length}`:''}`;
+  if (lista.length===0) {
+    listEl.innerHTML = `<div class="hist-empty"><div class="hist-empty-ic">${histState.orcamentos.length===0?'📭':'🔍'}</div>${histState.orcamentos.length===0?'Nenhum orçamento salvo ainda.\nFaça seu primeiro orçamento!':'Nenhum resultado para esta busca.'}</div>`;
+    return;
+  }
+  listEl.innerHTML = lista.map(orc => histRenderCard(orc)).join('');
+}
+
+function histRenderCard(orc) {
+  const c = corTipo(orc.tipo);
+  const expanded = histState.expandido === orc.id;
+  return `
+    <div class="orc-card" id="orcCard${orc.id}">
+      <div class="orc-card-top" onclick="histToggleExpand(${orc.id})">
+        <div class="orc-card-ic" style="background:${c.bg};border:1px solid ${c.brd}">${TIPO_ICON[orc.tipo]||'📋'}</div>
+        <div class="orc-card-info">
+          <div class="orc-card-titulo">${TIPO_LABEL[orc.tipo]||orc.tipo}${orc.clienteNome?` · ${orc.clienteNome}`:''}</div>
+          <div class="orc-card-sub">${orc.larg}×${orc.alt}cm${orc.vidro&&VIDROS[orc.vidro]?' · '+VIDROS[orc.vidro].nome:''}</div>
+        </div>
+        <div class="orc-card-total">
+          <div class="orc-card-valor">${orc.resultado?formatBRL(orc.resultado.total):'—'}</div>
+          <div class="orc-card-data">${formatData(orc.criadoEm)}</div>
+        </div>
+      </div>
+      ${expanded?`
+        <div class="orc-card-expand">
+          <div class="orc-card-detail">
+            ${(orc.resultado?.linhas||[]).map(l=>`<div class="orc-detail-row"><span>${l.nome}</span><span>${formatBRL(l.valor)}</span></div>`).join('')}
+            ${orc.resultado?.totalAvista<orc.resultado?.total?`<div class="orc-detail-row" style="margin-top:4px"><span style="color:var(--grn)">💚 À vista</span><span style="color:var(--grn)">${formatBRL(orc.resultado.totalAvista)}</span></div>`:''}
+            ${orc.clienteFone?`<div class="orc-detail-row"><span>📱 Telefone</span><span>${orc.clienteFone}</span></div>`:''}
+          </div>
+          <div class="orc-card-actions">
+            <button class="orc-act-btn orc-act-editar" onclick="histEditar(${orc.id})">✏️ Editar</button>
+            <button class="orc-act-btn orc-act-dupl"   onclick="histDuplicar(${orc.id})">📋 Duplicar</button>
+            <button class="orc-act-btn orc-act-excluir" onclick="histExcluir(${orc.id})">🗑️ Excluir</button>
+          </div>
+        </div>
+      `:''}
+    </div>
+  `;
+}
+
+function histToggleExpand(id) {
+  histState.expandido = histState.expandido===id ? null : id;
+  histRenderLista();
+}
+
+function histSetFiltro(id) {
+  histState.filtro = id; histState.busca=''; histState.dataInicio=''; histState.dataFim='';
+  const fw = document.getElementById('histFiltros');
+  if (fw) fw.querySelectorAll('.hist-chip').forEach(b=>{ b.classList.toggle('on', b.textContent.trim()===(['todos','cliente','telefone','data'].map((x,i)=>['📋 Todos','👤 Cliente','📱 Telefone','📅 Data'][i])[['todos','cliente','telefone','data'].indexOf(id)])); });
+  // Re-render search area
+  const bw = document.getElementById('histBuscaWrap');
+  if (bw) bw.innerHTML = histState.filtro!=='data'?`<div class="hist-busca"><span class="hist-busca-ic">🔍</span><input id="histBuscaInput" value="" placeholder="${histPlaceholder()}" oninput="histSetBusca(this.value)" autocomplete="off"></div>`:`<div class="hist-date-row"><div class="hist-date-group"><div class="hist-date-lbl">De</div><input type="date" id="histDataIni" onchange="histSetDatas(this.value,null)"></div><div class="hist-date-group"><div class="hist-date-lbl">Até</div><input type="date" id="histDataFim" onchange="histSetDatas(null,this.value)"></div></div>`;
+  // Update chip styles
+  document.querySelectorAll('.hist-chip').forEach((b,i)=>b.classList.toggle('on',i===['todos','cliente','telefone','data'].indexOf(id)));
+  histRenderLista();
+}
+
+function histSetBusca(v) { histState.busca=v; histRenderLista(); }
+function histSetDatas(ini,fim) {
+  if (ini!==null) histState.dataInicio=ini;
+  if (fim!==null) histState.dataFim=fim;
+  histRenderLista();
+}
+
+function histMostrarToast(msg) {
+  const t = document.getElementById('histToast');
+  if (!t) return;
+  t.innerHTML = `<div class="hist-toast">${msg}</div>`;
+  setTimeout(()=>{ if(t) t.innerHTML=''; },2500);
+}
+
+async function histExcluir(id) {
+  const orc = histState.orcamentos.find(o=>o.id===id);
+  if (!orc) return;
+  showModalConfirm('🗑️ Excluir orçamento?',`Deseja excluir o orçamento de ${orc.clienteNome||TIPO_LABEL[orc.tipo]}? Esta ação não pode ser desfeita.`,'Excluir',async()=>{
+    try {
+      await removerOrcamento(id);
+      histState.orcamentos = histState.orcamentos.filter(o=>o.id!==id);
+      histState.expandido=null;
+      histRenderLista();
+      closeModal();
+      histMostrarToast('🗑️ Orçamento excluído');
+    } catch(e) { histMostrarToast('❌ Erro ao excluir'); }
+  }, true);
+}
+
+async function histDuplicar(id) {
+  const orc = histState.orcamentos.find(o=>o.id===id);
+  if (!orc) return;
+  try {
+    await duplicarOrcamento(orc);
+    histState.orcamentos = await listarOrcamentos();
+    histRenderLista();
+    histMostrarToast('📋 Orçamento duplicado!');
+  } catch(e) { histMostrarToast('❌ Erro ao duplicar'); }
+}
+
+function histEditar(id) {
+  const orc = histState.orcamentos.find(o=>o.id===id);
+  if (!orc) return;
+  showModalEditar(orc, async(atualizado)=>{
+    try {
+      await atualizarOrcamento(atualizado);
+      const idx = histState.orcamentos.findIndex(o=>o.id===id);
+      if (idx>=0) histState.orcamentos[idx] = atualizado;
+      histRenderLista();
+      closeModal();
+      histMostrarToast('✅ Orçamento atualizado!');
+    } catch(e) { histMostrarToast('❌ Erro ao salvar'); }
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+// CLIENTES
+// ════════════════════════════════════════════════════════════
+
+const CLIENTES_MOCK = [
+  { nome:'João Silva',  fone:'(85) 99111-2233', ult:'Porta Pivotante · R$ 2.840', data:'14 Mai 2025' },
+  { nome:'Maria Costa', fone:'(85) 98222-3344', ult:'Box de Banheiro · R$ 1.560', data:'10 Mai 2025' },
+  { nome:'Pedro Alves', fone:'(85) 97333-4455', ult:'Janela Correr · R$ 980',     data:'05 Mai 2025' },
+  { nome:'Ana Souza',   fone:'(85) 96444-5566', ult:'Espelho · R$ 430',           data:'28 Abr 2025' },
+  { nome:'Carlos Lima', fone:'(85) 95555-6677', ult:'Guarda Corpo · R$ 3.200',    data:'20 Abr 2025' },
+];
+
+let clientesBusca = '';
+
+function renderClientes(wrap) {
+  const filtrados = clientesBusca.trim()==='' ? CLIENTES_MOCK : CLIENTES_MOCK.filter(c=>c.nome.toLowerCase().includes(clientesBusca.toLowerCase())||c.fone.includes(clientesBusca));
+  wrap.innerHTML = `
+    <div>
+      <div class="hero"><div class="hero-ttl">👥 Clientes</div><div class="hero-sub">Cadastro e histórico de atendimentos</div></div>
+      <div class="section">
+        <div class="card" style="background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));border-color:rgba(201,168,76,.2);margin-bottom:20px;display:flex;align-items:center;gap:12px">
+          <span style="font-size:1.5rem">🚧</span>
+          <div><div style="font-size:.76rem;font-weight:700;color:var(--gold2);margin-bottom:3px">Em desenvolvimento</div><div style="font-size:.65rem;color:var(--t4);line-height:1.5">CRM completo com histórico e cadastro total de clientes em breve.</div></div>
+        </div>
+        <div class="field" style="margin-bottom:16px">
+          <input type="text" placeholder="🔍  Buscar por nome ou telefone…" value="${clientesBusca}" oninput="clientesBuscar(this.value)">
+        </div>
+        <div class="section-ttl">${filtrados.length} cliente${filtrados.length!==1?'s':''}</div>
+        ${filtrados.length===0?`<div class="card" style="text-align:center;padding:28px 16px"><div style="font-size:1.5rem;margin-bottom:8px">🔍</div><div style="font-size:.76rem;color:var(--t4)">Nenhum cliente encontrado</div></div>`:
+        filtrados.map(c=>`
+          <div class="cliente-card">
+            <div class="cliente-top">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="cliente-avatar">${c.nome.charAt(0)}</div>
+                <div><div style="font-size:.82rem;font-weight:700;color:var(--tx);margin-bottom:2px">${c.nome}</div><div style="font-size:.66rem;color:var(--t3)">${c.fone}</div></div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="window.open('https://wa.me/55${c.fone.replace(/\D/g,'')}','_blank')">📲</button>
+            </div>
+            <div class="cliente-ult">
+              <div style="font-size:.65rem;color:var(--t4)">Último: <span style="color:var(--t2);font-weight:600">${c.ult}</span></div>
+              <div style="font-size:.6rem;color:var(--t4)">${c.data}</div>
+            </div>
+          </div>
+        `).join('')}
+        <button class="btn btn-gold btn-full" style="margin-top:8px" onclick="alert('Cadastro de cliente: em desenvolvimento')">+ Novo Cliente</button>
+      </div>
+      <div style="height:80px"></div>
+    </div>
+  `;
+}
+
+function clientesBuscar(v) {
+  clientesBusca = v;
+  renderClientes(document.getElementById('pgWrap'));
+}
+
+// ════════════════════════════════════════════════════════════
+// CONFIGURAÇÕES
+// ════════════════════════════════════════════════════════════
+
+const DIFERENCIAIS = [
+  { ic:'🏆', ttl:'Qualidade',  sub:'Vidros certificados'          },
+  { ic:'🔧', ttl:'Instalação', sub:'Profissional especializado'   },
+  { ic:'⚡', ttl:'Agilidade',  sub:'Prazo cumprido'               },
+  { ic:'💬', ttl:'Suporte',    sub:'Atendimento direto'           },
+];
+const CONTATOS = [
+  { ic:'⏰', lbl:'Horário',    val:'Seg–Sex 8h–18h · Sáb 8h–13h'         },
+  { ic:'🚛', lbl:'Frete',     val:'Grátis até 20 km · Acima sob consulta' },
+  { ic:'💳', lbl:'Pagamento', val:'PIX · Dinheiro · Cartão · Parcelado'   },
+  { ic:'📐', lbl:'Medição',   val:'Visita técnica disponível'              },
+];
+const SERVICOS = [['🚪','Portas de Vidro'],['🪟','Janelas'],['🛁','Box de Banheiro'],['🪞','Espelhos'],['🏗️','Guarda Corpo'],['🪵','Marcenaria'],['⚙️','Serralheria'],['🔆','Vidros Comuns']];
+
+function renderConfig(wrap) {
+  wrap.innerHTML = `
+    <div>
+      <div class="sobre-hero"><div class="sobre-nm">Ceará Planejados</div><div class="sobre-sub">Vidraçaria · Marcenaria · Serralheria</div></div>
+      <div class="section">
+        <div class="garantia-grid">
+          ${DIFERENCIAIS.map(g=>`<div class="garantia-card"><div class="garantia-ic">${g.ic}</div><div class="garantia-ttl">${g.ttl}</div><div class="garantia-sub">${g.sub}</div></div>`).join('')}
+        </div>
+        <div class="section-ttl">Contato &amp; Informações</div>
+        <div class="card" style="padding:6px 16px">
+          ${CONTATOS.map(item=>`<div class="info-item"><span class="info-ic">${item.ic}</span><div class="info-body"><div class="info-lbl">${item.lbl}</div><div class="info-val">${item.val}</div></div></div>`).join('')}
+        </div>
+        <div class="section-ttl" style="margin-top:20px">Nossos Serviços</div>
+        <div class="card">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            ${SERVICOS.map(([ic,nome])=>`<div style="display:flex;align-items:center;gap:9px"><span>${ic}</span><span style="font-size:.78rem;color:var(--t2)">${nome}</span></div>`).join('')}
+          </div>
+        </div>
+        <button class="btn btn-grn btn-full" style="margin-top:18px" onclick="window.open('https://wa.me/5585999999999','_blank')">📲 Falar no WhatsApp</button>
+        <div class="divider" style="margin-top:24px"></div>
+        <div class="section-ttl" style="margin-top:4px">Configurações do App</div>
+        <div class="card" style="background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));border-color:rgba(201,168,76,.2);display:flex;align-items:center;gap:12px">
+          <span style="font-size:1.5rem">🚧</span>
+          <div><div style="font-size:.76rem;font-weight:700;color:var(--gold2);margin-bottom:3px">Em desenvolvimento</div><div style="font-size:.65rem;color:var(--t4);line-height:1.5">Edição de dados da empresa, margens e configurações gerais em breve.</div></div>
+        </div>
+        <div style="text-align:center;margin-top:20px"><div style="font-size:.55rem;color:var(--t4);letter-spacing:2px;text-transform:uppercase">Ceará Planejados · v1.0</div></div>
+      </div>
+      <div style="height:80px"></div>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════════════════
+// MODAIS
+// ════════════════════════════════════════════════════════════
+
+function showModal(html) {
+  const c = document.getElementById('modalContainer');
+  c.innerHTML = `
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()">
+      <div class="modal-box" onclick="event.stopPropagation()">${html}</div>
+    </div>
+  `;
+}
+
+function closeModal() {
+  document.getElementById('modalContainer').innerHTML = '';
+}
+
+function showModalConfirm(titulo, mensagem, labelConfirmar, onConfirmar, perigoso=false) {
+  showModal(`
+    <div class="modal-titulo">${titulo}</div>
+    <div class="modal-msg">${mensagem}</div>
+    <div class="modal-row">
+      <button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>
+      <button class="btn ${perigoso?'btn-red':'btn-gold'} btn-full" id="modalConfirmBtn">${labelConfirmar}</button>
+    </div>
+  `);
+  document.getElementById('modalConfirmBtn').onclick = onConfirmar;
+}
+
+function showModalWpp(texto, onEnviar) {
+  showModal(`
+    <div class="modal-titulo">📲 Enviar pelo WhatsApp</div>
+    <div class="modal-wpp-preview">${texto}</div>
+    <div class="modal-row">
+      <button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-grn btn-full" id="modalWppBtn">Abrir WhatsApp</button>
+    </div>
+  `);
+  document.getElementById('modalWppBtn').onclick = onEnviar;
+}
+
+function showModalEditar(orc, onSalvar) {
+  const tiposOpts = TIPOS.map(t=>`<option value="${t.id}"${orc.tipo===t.id?' selected':''}>${t.label}</option>`).join('');
+  showModal(`
+    <div class="modal-titulo">✏️ Editar Orçamento</div>
+    <div style="max-height:60vh;overflow-y:auto">
+      <div class="field"><label>Tipo</label><select id="editTipo" onchange="editTipoChange()">${tiposOpts}</select></div>
+      <div class="campo-row">
+        <div class="field"><label>Largura (cm)</label><input id="editLarg" type="number" value="${orc.larg}" placeholder="cm"></div>
+        <div class="field"><label>Altura (cm)</label><input id="editAlt" type="number" value="${orc.alt}" placeholder="cm"></div>
+      </div>
+      <div class="field"><label>KM para frete</label><input id="editKm" type="number" value="${orc.km||0}" placeholder="0"></div>
+      <div class="field"><label>Cliente</label><input id="editCliente" type="text" value="${orc.clienteNome||''}" placeholder="Nome"></div>
+      <div class="field"><label>Telefone</label><input id="editFone" type="tel" value="${orc.clienteFone||''}" placeholder="(85) 9..."></div>
+    </div>
+    <div class="modal-row" style="margin-top:12px">
+      <button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-gold btn-full" id="modalEditSalvarBtn">Salvar</button>
+    </div>
+  `);
+  document.getElementById('modalEditSalvarBtn').onclick = () => {
+    const tipo  = document.getElementById('editTipo').value;
+    const larg  = parseFloat(document.getElementById('editLarg').value)||orc.larg;
+    const alt   = parseFloat(document.getElementById('editAlt').value)||orc.alt;
+    const km    = parseFloat(document.getElementById('editKm').value)||0;
+    const clienteNome = document.getElementById('editCliente').value.trim();
+    const clienteFone = document.getElementById('editFone').value.trim();
+    const novoRes = calcularOrcamento({ tipo, larg, alt, vidro:orc.vidro, accs:orc.accs||{}, km });
+    onSalvar({ ...orc, tipo, larg, alt, km, clienteNome, clienteFone, resultado:novoRes||orc.resultado });
+  };
+}
+
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
+
+// Header date
+function getDataHdr() {
+  const d = new Date();
+  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  return `${dias[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`;
+}
+document.getElementById('hdrData').textContent = getDataHdr();
+
+// Build nav & first page
+buildNav();
+renderPage();
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
+
+// Handle PWA shortcuts via URL
+const urlParams = new URLSearchParams(window.location.search);
+const pgParam = urlParams.get('pg');
+if (pgParam && NAV_ITEMS.some(n=>n.id===pgParam)) {
+  navTo(pgParam);
+}
+</script>
 </body>
 </html>
