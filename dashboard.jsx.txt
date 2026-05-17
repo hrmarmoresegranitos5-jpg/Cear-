@@ -1,0 +1,127 @@
+// dashboard.jsx — Página Inicial (Home)
+// Ceará Planejados — Vidraçaria
+
+export default function Dashboard({ navTo, setTipo, logoSrc }) {
+  return (
+    <div id="pgHome" className="pg on">
+      {/* Banner principal */}
+      <div className="home-banner">
+        <div className="home-banner-top">
+          <div className="home-banner-logo">
+            <img src={logoSrc} alt="Ceará Planejados" />
+          </div>
+          <div className="home-banner-info">
+            <div className="home-banner-nm">Ceará Planejados</div>
+            <div className="home-banner-sub">Vidraçaria · Marcenaria · Serralheria</div>
+          </div>
+        </div>
+
+        <div className="home-stats">
+          <div className="stat-card">
+            <div className="stat-val">8mm</div>
+            <div className="stat-lbl">Temperado</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-val">10%</div>
+            <div className="stat-lbl">À vista</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-val">20km</div>
+            <div className="stat-lbl">Frete grátis</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Atalhos de orçamento */}
+      <div className="section">
+        <div className="section-ttl">Calcular orçamento</div>
+        <div className="qa-grid">
+          <div className="qa-btn" onClick={() => { navTo('orc'); setTipo('pivotante'); }}>
+            <span className="qa-ic">🚪</span>
+            <div className="qa-info">
+              <div className="qa-nm">Porta Pivotante</div>
+              <div className="qa-sm">Temperado 8mm</div>
+            </div>
+          </div>
+
+          <div className="qa-btn" onClick={() => { navTo('orc'); setTipo('correr'); }}>
+            <span className="qa-ic">🔲</span>
+            <div className="qa-info">
+              <div className="qa-nm">Porta de Correr</div>
+              <div className="qa-sm">2 ou 4 folhas</div>
+            </div>
+          </div>
+
+          <div className="qa-btn" onClick={() => { navTo('orc'); setTipo('janela'); }}>
+            <span className="qa-ic">🪟</span>
+            <div className="qa-info">
+              <div className="qa-nm">Janela</div>
+              <div className="qa-sm">Correr / Basculante</div>
+            </div>
+          </div>
+
+          <div className="qa-btn" onClick={() => { navTo('orc'); setTipo('box'); }}>
+            <span className="qa-ic">🛁</span>
+            <div className="qa-info">
+              <div className="qa-nm">Box de Banheiro</div>
+              <div className="qa-sm">Pivotante / Correr</div>
+            </div>
+          </div>
+
+          <div className="qa-btn" onClick={() => { navTo('orc'); setTipo('espelho'); }}>
+            <span className="qa-ic">🪞</span>
+            <div className="qa-info">
+              <div className="qa-nm">Espelho</div>
+              <div className="qa-sm">Com / sem bisotê</div>
+            </div>
+          </div>
+
+          <div className="qa-btn" onClick={() => { navTo('orc'); setTipo('guarda'); }}>
+            <span className="qa-ic">🏗️</span>
+            <div className="qa-info">
+              <div className="qa-nm">Guarda Corpo</div>
+              <div className="qa-sm">Módulos de 120cm</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Informações rápidas */}
+      <div className="section">
+        <div className="section-ttl">Informações</div>
+        <div className="card" style={{ padding: '6px 16px' }}>
+          <div className="info-item">
+            <span className="info-ic">⏰</span>
+            <div className="info-body">
+              <div className="info-lbl">Horário</div>
+              <div className="info-val">Seg–Sex 8h–18h · Sáb 8h–13h</div>
+            </div>
+          </div>
+          <div className="info-item">
+            <span className="info-ic">🚛</span>
+            <div className="info-body">
+              <div className="info-lbl">Frete</div>
+              <div className="info-val">Grátis até 20 km · Acima sob consulta</div>
+            </div>
+          </div>
+          <div className="info-item">
+            <span className="info-ic">💳</span>
+            <div className="info-body">
+              <div className="info-lbl">Pagamento</div>
+              <div className="info-val">10% desconto à vista · 6x sem juros</div>
+            </div>
+          </div>
+          <div className="info-item">
+            <span className="info-ic">🔧</span>
+            <div className="info-body">
+              <div className="info-lbl">Instalação</div>
+              <div className="info-val">Profissional capacitado · Garantia inclusa</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ height: '80px' }} />
+    </div>
+  );
+}

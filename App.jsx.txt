@@ -1,0 +1,110 @@
+// App.jsx — Orquestrador principal
+// Ceará Planejados — Vidraçaria
+//
+// Responsabilidades:
+//   - Controla qual página está ativa (estado de navegação)
+//   - Renderiza o shell: Header + NavBar
+//   - Renderiza a página ativa via imports dos módulos
+//
+// NÃO contém mais o HTML das páginas — cada uma está no seu próprio arquivo.
+
+import { useState, useEffect } from 'react';
+
+// ── Importação das páginas ─────────────────────────────────────────────────
+import Dashboard     from './pages/dashboard';
+import Orcamentos    from './pages/orcamentos';
+import Financeiro    from './pages/financeiro';
+import Agenda        from './pages/agenda';
+import Clientes      from './pages/clientes';
+import Configuracoes from './pages/configuracoes';
+
+// Logo (base64 inline ou URL — mesma origem do HTML original)
+const LOGO_SRC = ''; // substituir pelo src real (base64 ou URL)
+
+// Definição das abas da NavBar
+const NAV_ITEMS = [
+  { id: 'home',          label: 'Início',     icon: '🏠',  cta: false },
+  { id: 'orc',           label: 'Orçamento',  icon: '🧮',  cta: true  },
+  { id: 'financeiro',    label: 'Preços',     icon: '💎',  cta: false },
+  { id: 'clientes',      label: 'Clientes',   icon: '👥',  cta: false },
+  { id: 'configuracoes', label: 'Config.',    icon: 'ℹ️',  cta: false },
+];
+
+export default function App() {
+  const [paginaAtiva, setPaginaAtiva] = useState('home');
+  const [currentTipo, setCurrentTipo] = useState('pivotante');
+  const [dataHdr, setDataHdr] = useState('');
+
+  // Data no header
+  useEffect(() => {
+    const d = new Date();
+    const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    setDataHdr(`${dias[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}`);
+  }, []);
+
+  function navTo(pg) {
+    setPaginaAtiva(pg);
+  }
+
+  function handleSetTipo(tipo) {
+    setCurrentTipo(tipo);
+    setPaginaAtiva('orc');
+  }
+
+  // Renderiza a página ativa
+  function renderPagina() {
+    const props = { navTo, setTipo: handleSetTipo, logoSrc: LOGO_SRC };
+
+    switch (paginaAtiva) {
+      case 'home':          return <Dashboard     {...props} />;
+      case 'orc':           return <Orcamentos    currentTipo={currentTipo} setCurrentTipo={setCurrentTipo} />;
+      case 'financeiro':    return <Financeiro    />;
+      case 'agenda':        return <Agenda        />;
+      case 'clientes':      return <Clientes      />;
+      case 'configuracoes': return <Configuracoes logoSrc={LOGO_SRC} />;
+      default:              return <Dashboard     {...props} />;
+    }
+  }
+
+  return (
+    <div id="sApp" className="scr on">
+      <div id="hdrAndPages">
+
+        {/* ── Header ─────────────────────────────────────────────────────── */}
+        <div id="hdr">
+          <div className="hlogo" onClick={() => navTo('home')}>
+            {LOGO_SRC && <img src={LOGO_SRC} alt="Logo" />}
+          </div>
+          <div className="hnm">
+            Ceará Planejados
+            <span className="hsub">Vidraçaria · Marcenaria</span>
+          </div>
+          <div id="hdrDate" className="hdt">{dataHdr}</div>
+        </div>
+
+        {/* ── Área de páginas ─────────────────────────────────────────────── */}
+        <div id="pages">
+          {renderPagina()}
+        </div>
+
+      </div>
+
+      {/* ── NavBar inferior ─────────────────────────────────────────────── */}
+      <div id="nav">
+        {NAV_ITEMS.map(item => (
+          <button
+            key={item.id}
+            className={`ni${item.cta ? ' ni-cta' : ''}${paginaAtiva === item.id ? ' on' : ''}`}
+            data-pg={item.id}
+            onClick={() => navTo(item.id)}
+          >
+            <div className="ni-ic-wrap">
+              <span className="ni-i">{item.icon}</span>
+            </div>
+            <span className="ni-l">{item.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
