@@ -1285,6 +1285,106 @@ function showModalEditar(orc, onSalvar) {
 }
 
 // ════════════════════════════════════════════════════════════
+// SPLASH SCREEN (entrada animada)
+// ════════════════════════════════════════════════════════════
+
+function showSplash(onDone) {
+  // Esconde o app enquanto o splash roda
+  document.getElementById('sApp').style.display = 'none';
+
+  const splash = document.createElement('div');
+  splash.id = 'splash';
+  splash.innerHTML = `
+    <div id="splashInner">
+      <div id="splashLogo">🪨</div>
+      <div id="splashNome">Ceará Planejados</div>
+      <div id="splashSub">Vidraçaria · Marcenaria · Serralheria</div>
+      <div id="splashBar"><div id="splashBarFill"></div></div>
+    </div>
+  `;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #splash {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0E0E1A;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #splashInner {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 10px; padding: 0 40px;
+      animation: splashIn 500ms cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes splashIn {
+      from { opacity: 0; transform: scale(.8) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes splashOut {
+      from { opacity: 1; transform: scale(1); }
+      to   { opacity: 0; transform: scale(1.06); }
+    }
+    #splashLogo {
+      width: 80px; height: 80px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #1E1E30, #14141F);
+      border: 1px solid rgba(212,175,55,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.6rem;
+      box-shadow: 0 0 40px rgba(212,175,55,0.15), 0 8px 40px rgba(0,0,0,0.7);
+      margin-bottom: 8px;
+      animation: splashLogoGlow 2s ease-in-out infinite alternate;
+    }
+    @keyframes splashLogoGlow {
+      from { box-shadow: 0 0 20px rgba(212,175,55,0.1), 0 8px 40px rgba(0,0,0,0.7); }
+      to   { box-shadow: 0 0 40px rgba(212,175,55,0.3), 0 8px 40px rgba(0,0,0,0.7); }
+    }
+    #splashNome {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      color: #EDEAE0; letter-spacing: -.01em;
+    }
+    #splashSub {
+      font-family: 'Outfit', sans-serif;
+      font-size: .72rem; font-weight: 400;
+      color: #7A7880; letter-spacing: .04em;
+    }
+    #splashBar {
+      width: 120px; height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 10px;
+      margin-top: 28px;
+      overflow: hidden;
+    }
+    #splashBarFill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #C9A84C, #EDD060);
+      border-radius: 10px;
+      transition: width 1.4s cubic-bezier(.4,0,.2,1);
+    }
+  `;
+  document.head.appendChild(style);
+  document.body.appendChild(splash);
+
+  // Animação da barra de progresso
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.getElementById('splashBarFill').style.width = '100%';
+    }, 80);
+  });
+
+  // Sair após 1.8s
+  setTimeout(() => {
+    splash.style.animation = 'splashOut 400ms ease both';
+    setTimeout(() => {
+      splash.remove();
+      style.remove();
+      document.getElementById('sApp').style.display = '';
+      onDone();
+    }, 380);
+  }, 1800);
+}
+
+// ════════════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════════════
 
@@ -1296,10 +1396,6 @@ function getDataHdr() {
 }
 document.getElementById('hdrData').textContent = getDataHdr();
 
-// Build nav & first page
-buildNav();
-renderPage();
-
 // Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -1307,12 +1403,17 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Handle PWA shortcuts via URL
+// Destino inicial: respeita atalho PWA (?pg=...) mas nunca no carregamento normal
 const urlParams = new URLSearchParams(window.location.search);
 const pgParam = urlParams.get('pg');
-if (pgParam && NAV_ITEMS.some(n=>n.id===pgParam)) {
-  navTo(pgParam);
-}
+const paginaInicial = (pgParam && NAV_ITEMS.some(n => n.id === pgParam)) ? pgParam : 'home';
+
+// Mostra splash, depois monta o app
+showSplash(() => {
+  paginaAtiva = paginaInicial;
+  buildNav();
+  renderPage();
+});
 </script>
 </body>
 </html>
